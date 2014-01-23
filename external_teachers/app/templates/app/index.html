@@ -37,9 +37,9 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if login %}
-						<li><a href="{{ auth_url }}">Login</a></li>
-						{% else %}
 						<li><a href="#">Logout</a></li>
+						{% else %}
+						<li><a href="{{ auth_url }}">Login</a></li>
 						{% endif %}
 					</ul>
 				</div><!--/.nav-collapse -->

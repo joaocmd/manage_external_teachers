@@ -23,6 +23,7 @@ def index(request):
 
 	if code and not request.user.is_authenticated():
 		fenixAPI.set_code(code)
+		print(code and not request.user.is_authenticated())
 		person = fenixAPI.get_person()
 		username = person['istId']
 		email = person['email']
