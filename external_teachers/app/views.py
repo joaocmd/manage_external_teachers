@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 import fenix
 
@@ -23,7 +23,6 @@ def index(request):
 
 	if code and not request.user.is_authenticated():
 		fenixAPI.set_code(code)
-		print(code and not request.user.is_authenticated())
 		person = fenixAPI.get_person()
 		username = person['istId']
 		email = person['email']
@@ -48,3 +47,8 @@ def about(request):
 	about = fenixAPI.get_about()
 	context = {'about' : about['institutionName']}
 	return render(request, 'app/about.html', context)
+
+def user_logout(request):
+	logout(request)
+	return index(request)
+
