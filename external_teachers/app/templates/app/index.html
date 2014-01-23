@@ -36,7 +36,7 @@
 						<li><a href="/app/about">About</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-						{% if login %}
+						{% if login_success %}
 						<li><a href="#">Logout</a></li>
 						{% else %}
 						<li><a href="{{ auth_url }}">Login</a></li>
@@ -51,7 +51,7 @@
 			<div class="jumbotron">
 				<h1>External Teachers Management tool</h1>
 				<p>This web application allow you to manage external teachers :).</p>
-				{% if login %}
+				{% if login_success %}
 				<p>Welcome {{ name }} </p>
 				{% endif %}
 			</div>

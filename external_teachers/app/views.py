@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 
 import fenix
 
@@ -18,7 +18,7 @@ def_password = '0'
 def index(request):
 	url = fenixAPI.get_authentication_url()
 	code = request.GET.get('code')
-	login = False
+	login_success = False
 	name = ''
 
 	if code and not request.user.is_authenticated():
@@ -36,10 +36,11 @@ def index(request):
 
 		if user is not None:
 			if user.is_active:
-				login = True
+				login_success = True
 				name = person['name']
+				login(request, user)
 
-	context = {'auth_url': url, 'login' : login, 'name' : name}
+	context = {'auth_url': url, 'login_success' : request.user.is_authenticated(), 'name' : name}
 
 	return render(request, 'app/index.html', context)
 
