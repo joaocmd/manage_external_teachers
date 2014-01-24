@@ -18,13 +18,12 @@ def_password = '0'
 def index(request):
 	url = fenixAPI.get_authentication_url()
 	code = request.GET.get('code')
-	login_success = False
 	name = ''
 
 	if code and not request.user.is_authenticated():
 		fenixAPI.set_code(code)
 		person = fenixAPI.get_person()
-		username = person['istId']
+		username = person['username']
 		email = person['email']
 		user = authenticate(username=username, password=def_password)
 		#User doesn't exist
@@ -35,11 +34,14 @@ def index(request):
 
 		if user is not None:
 			if user.is_active:
-				login_success = True
 				name = person['name']
 				login(request, user)
+	
+	if request.user.is_authenticated():
+		person = fenixAPI.get_person()
+		name = person['name']
 
-	context = {'auth_url': url, 'login_success' : request.user.is_authenticated(), 'name' : name}
+	context = {'auth_url': url, 'name' : name}
 
 	return render(request, 'app/index.html', context)
 
@@ -51,4 +53,12 @@ def about(request):
 def user_logout(request):
 	logout(request)
 	return index(request)
+
+def sc(request):
+	context = {}
+	return render(request, 'app/sc.html', context)
+
+def dep(request):
+	context = {}
+	return render(request, 'app/dep.html', context)
 
