@@ -35,6 +35,7 @@ def index(request):
 			user = authenticate(username=username, password=def_password)
 			name = person['name']
 			user.first_name = name
+			user.save()
 
 		if user is not None:
 			if user.is_active:
