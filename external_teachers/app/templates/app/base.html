@@ -54,7 +54,7 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if user.is_authenticated %}
-						<li><a href="/app">{{ name }}</a></li>
+						<li><a href="/app">{{ user.first_name }}</a></li>
 						<li><a href="/app/logout">Logout</a></li>
 						{% else %}
 						<li><a href="{{ auth_url }}">Login</a></li>

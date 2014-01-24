@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
+from app.models import Profile
+
 import fenix
 
 import os
@@ -31,17 +33,14 @@ def index(request):
 			#Create the user
 			user = User.objects.create_user(username, email, def_password)
 			user = authenticate(username=username, password=def_password)
+			name = person['name']
+			user.first_name = name
 
 		if user is not None:
 			if user.is_active:
-				name = person['name']
 				login(request, user)
 	
-	if request.user.is_authenticated():
-		person = fenixAPI.get_person()
-		name = person['name']
-
-	context = {'auth_url': url, 'name' : name}
+	context = {'auth_url': url}
 
 	return render(request, 'app/index.html', context)
 
