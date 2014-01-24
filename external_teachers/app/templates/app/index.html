@@ -1,66 +1,18 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
+{% extends "app/base.html" %}
 
-		<title>External Teachers Management</title>
+{% block navbar_home_active %}
+active
+{% endblock %}
 
-		{% load staticfiles %}
-		<!-- Bootstrap core CSS -->
-		<link href="{% static 'app/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
-	</head>
+{% block content %}
 
-	<body>
-		
-		<!-- Static navbar -->
-		<div class="navbar navbar-default navbar-static-top" role="navigation">
-			<div class="container">
-				
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-		   				<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">Project name</a>
-				</div>
-				
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="/app/about">About</a></li>
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-						{% if login_success %}
-						<li><a href="/app/logout">Logout</a></li>
-						{% else %}
-						<li><a href="{{ auth_url }}">Login</a></li>
-						{% endif %}
-					</ul>
-				</div><!--/.nav-collapse -->
-			</div>
-		</div>
-		
-		<div class="container">
-			<!-- Main component for a primary marketing message or call to action -->
-			<div class="jumbotron">
-				<h1>External Teachers Management tool</h1>
-				<p>This web application allow you to manage external teachers :).</p>
-				{% if login_success %}
-				<p>Welcome {{ name }} </p>
-				{% endif %}
-			</div>
-   		</div> <!-- /container -->
-		
-		<!-- Bootstrap core JavaScript-->
-		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-		<script src="{% static 'app/bootstrap/js/bootstrap.min.js' %}"></script>
+<div class="jumbotron">
+	<h1>External Teachers Management tool</h1>
+	<p>This web application allow you to manage external teachers :).</p>
+	{% if user.is_authenticated %}
+	<p>Welcome {{ name }} </p>
+	{% endif %}
+</div>
 
-	</body>
-</html>
+{% endblock %}
 

@@ -1,9 +1,9 @@
-<html>
-	<body>
-		<p>Test</po>
-		<p>{{ about|safe }}</p>
-	</body>
+{% extends "app/base.html" %}
 
+{% block navbar_about_active %}
+active
+{% endblock %}
 
-</html>
-
+{% block content %}
+<p>This is an application to manage the external teachers</p>
+{% endblock %}
