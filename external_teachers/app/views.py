@@ -62,3 +62,23 @@ def dep(request):
 	context = {}
 	return render(request, 'app/dep.html', context)
 
+def sc_opened(request):
+	context = {}
+	return render(request, 'app/sc_opened.html', context)
+
+def sc_closed(request):
+	context = {}
+	return render(request, 'app/sc_closed.html', context)
+
+def dep_opened(request):
+	context = {}
+	return render(request, 'app/dep_opened.html', context)
+
+def dep_closed(request):
+	context = {}
+	return render(request, 'app/dep_closed.html', context)
+
+def dep_prop_new(request):
+	context = {}
+	return render(request, 'app/dep_prop_new.html', context)
+
