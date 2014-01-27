@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
 from app.models import Profile
+from app.models import ExternalTeacherForm
 
 import fenix
 
@@ -15,6 +16,7 @@ import os
 
 fenixAPI = fenix.FenixAPISingleton()
 def_password = '0'
+print('Test')
 
 # Entry point
 def index(request):
@@ -41,7 +43,11 @@ def index(request):
 			if user.is_active:
 				login(request, user)
 	
-	context = {'auth_url': url}
+	if request.user.is_authenticated():
+		person = fenixAPI.get_person()
+		name = person['name']
+	
+	context = {'auth_url': url, 'name' : name}
 
 	return render(request, 'app/index.html', context)
 
@@ -79,6 +85,14 @@ def dep_closed(request):
 	return render(request, 'app/dep_closed.html', context)
 
 def dep_prop_new(request):
-	context = {}
+	if request.method == 'POST':
+		form = ExternalTeacherForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/app/dep_opened/')
+	else:
+		form = ExternalTeacherForm()
+
+	context = {'form' : form}
 	return render(request, 'app/dep_prop_new.html', context)
 
