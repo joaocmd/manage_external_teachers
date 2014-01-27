@@ -2,13 +2,12 @@
 
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from app.models import Profile
-from app.models import ExternalTeacherForm
+from app.models import ExternalTeacher, ExternalTeacherForm
 
 import fenix
 
@@ -60,16 +59,10 @@ def user_logout(request):
 	logout(request)
 	return index(request)
 
-def sc(request):
-	context = {}
-	return render(request, 'app/sc.html', context)
-
-def dep(request):
-	context = {}
-	return render(request, 'app/dep.html', context)
-
 def sc_opened(request):
-	context = {}
+	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
+	
+	context = {'external_teachers' : external_teachers}
 	return render(request, 'app/sc_opened.html', context)
 
 def sc_closed(request):
