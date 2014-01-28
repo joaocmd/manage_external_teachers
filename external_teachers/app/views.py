@@ -18,6 +18,41 @@ import os
 fenixAPI = fenix.FenixAPISingleton()
 def_password = '0'
 
+# Helper functions:
+def process_action(request, external_teachers, close_action, export_action):
+	saved = False
+	
+	if request.POST['action'] == 'close':
+		ids = request.POST.getlist('external_teachers')
+		
+		if ids:
+			for et_id in request.POST.getlist('external_teachers'):
+				e_teacher = ExternalTeacher.objects.get(id = et_id)
+				e_teacher.close_date = datetime.now()
+				e_teacher.is_closed = True
+				e_teacher.save()
+			saved = True
+			context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
+			return render(request, 'app/sc_opened.html', context)
+
+	elif request.POST['action'] == 'export':
+		# Create the HttpResponse object with the appropriate CSV header.
+		response = HttpResponse(content_type='text/csv')
+		response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+		writer = csv.writer(response)
+		
+		ids = request.POST.getlist('external_teachers')
+
+		for et_id in ids:
+			e_teacher = ExternalTeacher.objects.get(id = et_id)	
+			writer.writerow([e_teacher.user.username, e_teacher.name])
+		
+		return response
+	
+	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
+	return render(request, 'app/sc_opened.html', context)
+
+
 # Entry point
 def index(request):
 	url = fenixAPI.get_authentication_url()
@@ -62,17 +97,7 @@ def sc_opened(request):
 	export_action = True
 
 	if request.method == 'POST':
-		if request.POST['action'] == 'close':
-			for et_id in request.POST.getlist('external_teachers'):
-				e_teacher = ExternalTeacher.objects.get(id = et_id)
-				e_teacher.close_date = datetime.now()
-				e_teacher.is_closed = True
-				e_teacher.save()
-				saved = True
-		elif request.POST['action'] == 'export':
-			saved = False
-			#export to csv code
-
+		return process_action(request, external_teachers, close_action, export_action)
 	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
 	return render(request, 'app/sc_opened.html', context)
 
