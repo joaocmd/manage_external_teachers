@@ -6,46 +6,20 @@ active
 
 {% block content %}
 
+
 <h1>Opened proposals for external Teachers: {{ external_teachers.count }}</h1>
-<table class="table table-striped">
-	<tr>
-		<th></th>
-		<th>Id</th>
-		<th>Name</th>
-		<th>Professional categoty</th>
-		<th>Week hours</th>
-		<th>Park</th>
-		<th>Card</th>
-		<th>Department</th>
-		<th>Degree</th>
 
-	</tr>
-	{% for external_teacher in external_teachers %}
-	<tr>
-		<td>
-			<div class="input-group">
-				<input type="checkbox"/>
-				</input>
-			</div>
-		<td>{{ external_teacher.user.username }}</td>
-		<td>{{ external_teacher.name }}</td>
-		<td>{{ external_teacher.professional_category }}</td>
-		<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
-		<td>{{ external_teacher.park }}</td>
-		<td>{{ external_teacher.card }}</td>
-		<td>{{ external_teacher.department }}</td>
-		<td>{{ external_teacher.degree }}</td>
+<p>{% if saved %} Selected proposals have been closed {% endif %}</p>
 
-	</tr>
-	{% endfor %}
+<form role="form" method="post" action="">
+	{% csrf_token %}
+	{% include "app/external_teachers_list.html" %}
+	<div class="btn-group">
 
-</table>
-
-<div class="btn-group">
-	<button type="button" class="btn btn-default btn-success">
-		Close 
-	</button>
-</div>
+		<input type="submit" class="btn btn-default btn-success" value="Close"> 
+		</button>
+	</div>
+</form>
 
 {% endblock %}
 

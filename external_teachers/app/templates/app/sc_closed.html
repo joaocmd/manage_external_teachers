@@ -6,7 +6,9 @@ active
 
 {% block content %}
 
-<p>Building...</p>
+<h1>Closed proposals for external teachers: {{ external_teachers.count }}</h1>
+
+{% include "app/external_teachers_list.html" %}
 
 {% endblock %}
 

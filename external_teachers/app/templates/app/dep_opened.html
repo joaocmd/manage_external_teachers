@@ -11,5 +11,8 @@ active
 	<a href="/app/dep_prop_new">Add new possible external teacher</a>
 </button>
 
+<h1>Opened proposals for external teachers: {{ external_teachers.count }}</h1>
+{% include "app/external_teachers_list.html" %}
+
 {% endblock %}
 
