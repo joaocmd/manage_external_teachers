@@ -1,0 +1,113 @@
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<th></th>
+			<th>Id</th>
+			<th>Name</th>
+			<th>Professional categoty</th>
+			<th>Week hours</th>
+			<th>Park</th>
+			<th>Card</th>
+			<th>Department</th>
+			<th>Degree</th>
+			<th></th>
+
+		</tr>
+		{% for external_teacher in external_teachers %}
+		<tr>
+			<td>
+				<div class="input-group">
+					<input type="checkbox" name="external_teachers" value="{{ external_teacher.id }}"/>
+					</input>
+				</div>
+			<td>{{ external_teacher.user.username }}</td>
+			<td>{{ external_teacher.name }}</td>
+			<td>{{ external_teacher.professional_category }}</td>
+			<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
+			<td>{{ external_teacher.park }}</td>
+			<td>{{ external_teacher.card }}</td>
+			<td>{{ external_teacher.department }}</td>
+			<td>{{ external_teacher.degree }}</td>
+			<td>
+				<!-- Button trigger modal -->
+				<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modal{{ external_teacher.id }}">
+					More info
+				</button>
+				<!-- Modal -->
+				<div class="modal fade" id="modal{{ external_teacher.id }}" tabindex="-1" role="dialog" aria-labelledby="label{{ external_teacher.id }}" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h4 class="modal-title" id="label{{ external_teacher.id }}">{{ external_teacher.name }}</h4>
+							</div>
+							<div class="modal-body">
+								<div class="table-responsive">
+									<table class="table table-striped">
+										<tr>
+											<td>Id:</td>
+											<td>{{ external_teacher.user.username }}</td>
+										</tr>
+										<tr>
+											<td>Name:</td>
+											<td>{{ external_teacher.name }}</td>
+										</tr>
+										<tr>
+											<td>Is closed:</td>
+											<td>{{ external_teacher.is_closed }}</td>
+										</tr>
+											<td>Close date:</td>
+											<td>{{ external_teacher.close_date }}</td>
+										</tr>
+										<tr>
+											<td>Professional category:</td>
+											<td>{{ external_teacher.professional_category }}</td>
+										</tr>
+										<tr>
+											<td>Hours per week:</td>
+											<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
+										</tr>
+										<tr>
+											<td>Park:</td>
+											<td>{{ external_teacher.park }}</td>
+										</tr>
+										<tr>
+											<td>Card:</td>
+											<td>{{ external_teacher.card }}</td>
+										</tr>
+										<tr>
+											<td>Department:</td>
+											<td>{{ external_teacher.department }}</td>
+										</tr>
+										<tr>
+											<td>Degree:</td>
+											<td>{{ external_teacher.degree }}</td>
+										</tr>
+										<tr>
+											<td>Course:</td>
+											<td>{{ external_teacher.course }}</td>
+										</tr>
+										<tr>
+											<td>Course manager:</td>
+											<td>{{external_teacher.course_manager}}</td>
+										</tr>
+										<tr>
+											<td>Notes:</td>
+											<td>{{external_teacher.notes}}</td>
+										</tr>
+									</table>
+								</div> <!-- End of responsive table-->
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			</td>
+		
+		</tr>
+		{% endfor %}
+	
+	</table>
+</div>
