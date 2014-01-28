@@ -1,0 +1,9 @@
+/* Custom style for the app*/
+
+.label {
+	font-weight:bold;
+	color:black
+}
+.error {
+	color:red;
+}
