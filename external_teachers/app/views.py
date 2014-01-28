@@ -58,34 +58,43 @@ def user_logout(request):
 def sc_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
 	saved = False
+	close_action = True
+	export_action = True
 
 	if request.method == 'POST':
-		for et_id in request.POST.getlist('external_teachers'):
-			e_teacher = ExternalTeacher.objects.get(id = et_id)
-			e_teacher.close_date = datetime.now()
-			e_teacher.is_closed = True
-			e_teacher.save()
-			saved = True
+		if request.POST['action'] == 'close':
+			for et_id in request.POST.getlist('external_teachers'):
+				e_teacher = ExternalTeacher.objects.get(id = et_id)
+				e_teacher.close_date = datetime.now()
+				e_teacher.is_closed = True
+				e_teacher.save()
+				saved = True
+		elif request.POST['action'] == 'export':
+			saved = False
+			#export to csv code
 
-	context = {'external_teachers' : external_teachers, 'saved' : saved}
+	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
 	return render(request, 'app/sc_opened.html', context)
 
 def sc_closed(request):
+	export_action = True
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
 	
-	context = {'external_teachers' : external_teachers}
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
 	return render(request, 'app/sc_closed.html', context)
 
 def dep_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
-	
-	context = {'external_teachers' : external_teachers}
+	export_action = True
+
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
 	return render(request, 'app/dep_opened.html', context)
 
 def dep_closed(request):
+	export_action = True
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
 	
-	context = {'external_teachers' : external_teachers}
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
 	return render(request, 'app/dep_closed.html', context)
 
 def dep_prop_new(request):

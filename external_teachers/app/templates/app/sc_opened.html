@@ -11,15 +11,7 @@ active
 
 <p>{% if saved %} Selected proposals have been closed {% endif %}</p>
 
-<form role="form" method="post" action="">
-	{% csrf_token %}
-	{% include "app/external_teachers_list.html" %}
-	<div class="btn-group">
-
-		<input type="submit" class="btn btn-default btn-success" value="Close"> 
-		</button>
-	</div>
-</form>
+{% include "app/external_teachers_list.html" %}
 
 {% endblock %}
 
