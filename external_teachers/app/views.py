@@ -9,19 +9,19 @@ from django.contrib.auth import authenticate, login, logout
 
 from app.models import ExternalTeacher, ExternalTeacherForm
 
+from datetime import datetime
+
 import fenix
 
 import os
 
 fenixAPI = fenix.FenixAPISingleton()
 def_password = '0'
-print('Test')
 
 # Entry point
 def index(request):
 	url = fenixAPI.get_authentication_url()
 	code = request.GET.get('code')
-	name = ''
 
 	if code and not request.user.is_authenticated():
 		fenixAPI.set_code(code)
@@ -42,11 +42,7 @@ def index(request):
 			if user.is_active:
 				login(request, user)
 	
-	if request.user.is_authenticated():
-		person = fenixAPI.get_person()
-		name = person['name']
-	
-	context = {'auth_url': url, 'name' : name}
+	context = {'auth_url': url}
 
 	return render(request, 'app/index.html', context)
 
@@ -61,20 +57,35 @@ def user_logout(request):
 
 def sc_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
-	
-	context = {'external_teachers' : external_teachers}
+	saved = False
+
+	if request.method == 'POST':
+		for et_id in request.POST.getlist('external_teachers'):
+			e_teacher = ExternalTeacher.objects.get(id = et_id)
+			e_teacher.close_date = datetime.now()
+			e_teacher.is_closed = True
+			e_teacher.save()
+			saved = True
+
+	context = {'external_teachers' : external_teachers, 'saved' : saved}
 	return render(request, 'app/sc_opened.html', context)
 
 def sc_closed(request):
-	context = {}
+	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
+	
+	context = {'external_teachers' : external_teachers}
 	return render(request, 'app/sc_closed.html', context)
 
 def dep_opened(request):
-	context = {}
+	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
+	
+	context = {'external_teachers' : external_teachers}
 	return render(request, 'app/dep_opened.html', context)
 
 def dep_closed(request):
-	context = {}
+	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
+	
+	context = {'external_teachers' : external_teachers}
 	return render(request, 'app/dep_closed.html', context)
 
 def dep_prop_new(request):
