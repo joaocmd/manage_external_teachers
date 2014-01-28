@@ -11,6 +11,8 @@ from app.models import ExternalTeacher, ExternalTeacherForm
 
 from datetime import datetime
 
+import csv
+
 import fenix
 
 import os
