@@ -1,3 +1,14 @@
+<script language="JavaScript">
+	
+	function toggle(source) {
+  		checkboxes = document.getElementsByName('external_teachers');
+		for(var i=0, n=checkboxes.length; i<n; i++) {
+			checkboxes[i].checked = source.checked;
+		}
+	}
+
+</script>
+
 <form role="form" method="post" action=""> 
 	{% csrf_token %}
 	<div class="row">
@@ -23,7 +34,7 @@
 	<div class="table-responsive">
 		<table class="table table-striped">
 			<tr>
-				<th></th>
+				<th><input type="checkbox" onClick="toggle(this)" /> Toggle All</th>
 				<th>Id</th>
 				<th>Name</th>
 				<th>Professional categoty</th>
