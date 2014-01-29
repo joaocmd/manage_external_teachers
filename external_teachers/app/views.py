@@ -25,8 +25,7 @@ def process_action(request, external_teachers, close_action, export_action):
 	saved = False
 	
 	if request.POST['action'] == 'close':
-		ids = request.POST.getlist('external_teachers')
-		
+		ids = request.POST.getlist('external_teachers')	
 		if ids:
 			for et_id in request.POST.getlist('external_teachers'):
 				e_teacher = ExternalTeacher.objects.get(id = et_id)
@@ -45,11 +44,12 @@ def process_action(request, external_teachers, close_action, export_action):
 		
 		ids = request.POST.getlist('external_teachers')
 
-		for et_id in ids:
-			e_teacher = ExternalTeacher.objects.get(id = et_id)	
-			writer.writerow([e_teacher.user.username, e_teacher.name])
+		if ids:
+			for et_id in ids:
+				e_teacher = ExternalTeacher.objects.get(id = et_id)	
+				writer.writerow([e_teacher.user.username, e_teacher.name])
 		
-		return response
+			return response
 	
 	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
 	return render(request, 'app/sc_opened.html', context)
@@ -104,23 +104,35 @@ def sc_opened(request):
 	return render(request, 'app/sc_opened.html', context)
 
 def sc_closed(request):
+	close_action = False
 	export_action = True
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
-	
+
+	if request.method == 'POST':
+		return process_action(request, external_teachers, close_action, export_action)
+
 	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
 	return render(request, 'app/sc_closed.html', context)
 
 def dep_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
+	close_action = False
 	export_action = True
+
+	if request.method == 'POST':
+		return process_action(request, external_teachers, close_action, export_action)
 
 	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
 	return render(request, 'app/dep_opened.html', context)
 
 def dep_closed(request):
+	close_action = False
 	export_action = True
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
 	
+	if request.method == 'POST':
+		return process_action(request, external_teachers, close_action, export_action)
+
 	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
 	return render(request, 'app/dep_closed.html', context)
 
