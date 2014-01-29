@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from app.models import ExternalTeacher, ExternalTeacherForm
+from app.models import ExternalTeacher, ExternalTeacherForm, FenixAPIUserInfo
 
 from datetime import datetime
 
@@ -61,8 +61,9 @@ def index(request):
 	code = request.GET.get('code')
 
 	if code and not request.user.is_authenticated():
-		fenixAPI.set_code(code)
-		person = fenixAPI.get_person()
+		fenix_user = fenix.User()
+		fenixAPI.set_code(code, user=fenix_user)
+		person = fenixAPI.get_person(fenix_user)
 		username = person['username']
 		email = person['email']
 		user = authenticate(username=username, password=def_password)
@@ -70,10 +71,12 @@ def index(request):
 		if user is None:
 			#Create the user
 			user = User.objects.create_user(username, email, def_password)
+			info = FenixAPIUserInfo(code=fenix_user.code, access_token=fenix_user.access_token, refresh_token=fenix_user.refresh_token, token_expires=fenix_user.token_expires, user=user)
 			user = authenticate(username=username, password=def_password)
 			name = person['name']
 			user.first_name = name
 			user.save()
+			info.save()
 
 		if user is not None:
 			if user.is_active:

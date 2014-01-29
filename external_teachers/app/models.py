@@ -1,6 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractBaseUser
 from django.forms import ModelForm, Textarea
+
+import fenix
 
 class Profile(models.Model):
 	user = models.OneToOneField(User)
@@ -22,6 +24,18 @@ class ExternalTeacher(models.Model):
 	course_manager = models.CharField(max_length=200)
 	notes = models.CharField(max_length=200, blank=True)
 
+class FenixAPIUserInfo(models.Model):
+	user = models.OneToOneField(User)
+	code = models.CharField(max_length=200, null=True)
+	access_token = models.CharField(max_length=200, blank=True)
+	refresh_token = models.CharField(max_length=200, blank=True)
+	token_expires = models.IntegerField(default=0)
+
+	def get_fenix_api_user(self):
+		user = fenix.User(username=self.user.username, code=self.code, access_token=self.access_token, refresh_token=self.refresh_token, token_expires=self.token_expires)
+		return user
+
+#Forms
 class ExternalTeacherForm(ModelForm):
 	class Meta:
 		model = ExternalTeacher

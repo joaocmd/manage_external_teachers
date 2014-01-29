@@ -11,7 +11,7 @@ active
 	{% csrf_token %}
 	{% for field in form.visible_fields %}
 	<div class="form-group">
-		<div>{{ field.errors }}</div>
+		<div class="error">{{ field.errors }}</div>
 		{{ field.label_tag }} 
 		{{ field|addcss:"form-control" }}
 	</div>
