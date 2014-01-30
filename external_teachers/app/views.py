@@ -7,7 +7,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from app.models import ExternalTeacher, ExternalTeacherForm, FenixAPIUserInfo
+from app.models import ExternalTeacher, FenixAPIUserInfo
+
+from django.forms import ModelForm, Textarea, Select
 
 from datetime import datetime
 
@@ -82,6 +84,27 @@ def is_scientific_council_member(username):
 	
 	return False
 
+# Forms
+class ExternalTeacherForm(ModelForm):
+
+	def __init__(self, *args, **kwargs):
+		arg = kwargs.pop('request', None)
+		super(ExternalTeacherForm, self).__init__(*args, **kwargs)
+		session = arg.session
+		deps = session['departments']
+		choices = (('op1', 'op1'), )
+	
+		choices = [(d['acronym'], d['acronym']) for d in deps]
+		
+		self.fields['department'].widget = Select(choices=choices)
+		
+
+	class Meta:
+		model = ExternalTeacher
+		fields = '__all__'
+		exclude = ('close_date', )
+		widgets = {'notes' : Textarea(), }
+			 
 # Entry point
 def index(request):
 	url = fenixAPI.get_authentication_url()
@@ -185,7 +208,7 @@ def dep_prop_new(request):
 			form.save()
 			return HttpResponseRedirect('/app/dep_opened/')
 	else:
-		form = ExternalTeacherForm()
+		form = ExternalTeacherForm(request=request)
 
 	context = {'form' : form}
 	return render(request, 'app/dep_prop_new.html', context)
