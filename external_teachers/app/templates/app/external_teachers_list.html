@@ -58,7 +58,7 @@
 				{% if request.session.is_scientific_council_member %}
 				<td>
 					<div class="form-group">
-						<input type="text" class="form-control" id="" placeholder="">
+						<input type="text" class="form-control" id="" placeholder="" value="{{ external_teacher.professional_category }}">
 					</div>
 				</td>
 				{% else %}
@@ -68,13 +68,13 @@
 				{% if request.session.is_scientific_council_member %}
 				<td>
 					<div class="form-group">
-						<input type="checkbox" name="" {% if external_teacher.park %} checked {% endif %}>
+						<input type="checkbox" name="park" value="{{ external_teacher.id }}" {% if external_teacher.park %} checked {% endif %}>
 						</input>
 					</div>				
 				</td>
 				<td>
 					<div class="form-group">
-						<input type="checkbox" name="" {% if external_teacher.card %} checked {% endif %}>
+						<input type="checkbox" name="card" value="{{ external_teacher.id}}" {% if external_teacher.card %} checked {% endif %}>
 						</input>
 					</div>				
 				</td>
