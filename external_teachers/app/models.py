@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractBaseUser
-from django.forms import ModelForm, Textarea
+from django.forms import ModelForm, Textarea, Select
 
 import fenix
 
@@ -41,4 +41,4 @@ class ExternalTeacherForm(ModelForm):
 		model = ExternalTeacher
 		fields = '__all__'
 		exclude = ('close_date', )
-		widgets = {'notes' : Textarea(), }
+		widgets = {'notes' : Textarea(), 'department' : Select()}

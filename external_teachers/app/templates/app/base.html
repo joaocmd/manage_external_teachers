@@ -36,13 +36,16 @@
 						<li class="{% block navbar_home_active %} {% endblock %}"><a href="/app">Home</a></li>
 						<li class="{% block navbar_about_active %} {% endblock %}"><a href="/app/about">About</a></li>
 						{% if user.is_authenticated %}
+						{% if is_scientific_council_member %}
 						<li class="dropdown {% block navbar_sc_active %} {% endblock %}">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Scientific Council<span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/app/sc_opened">Opened</a></li>
 								<li><a href="/app/sc_closed">Closed</a></li>
 							</ul>
-						</li>
+							</li>
+						{% endif %}
+						{% if is_department_member %}
 						<li class="dropdown {% block navbar_dep_active %} {% endblock %}">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Department<span class="caret"></span></a>
 							<ul class="dropdown-menu">
@@ -50,7 +53,7 @@
 								<li><a href="/app/dep_closed">Closed</a></li>
 							</ul>
 						</li>
-
+						{% endif %}
 						{% endif %}
 					</ul>
 					<ul class="nav navbar-nav navbar-right">

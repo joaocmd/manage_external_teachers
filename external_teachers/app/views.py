@@ -39,7 +39,7 @@ def process_action(request, external_teachers, close_action, export_action):
 	elif request.POST['action'] == 'export':
 		# Create the HttpResponse object with the appropriate CSV header.
 		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+		response['Content-Disposition'] = 'attachment; filename="proposals.csv"'
 		writer = csv.writer(response)
 		
 		ids = request.POST.getlist('external_teachers')
@@ -54,6 +54,33 @@ def process_action(request, external_teachers, close_action, export_action):
 	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
 	return render(request, 'app/sc_opened.html', context)
 
+import json
+
+def open_json_file(filename):
+	json_data = open(filename)
+	print(json_data)
+	data = json.load(json_data)
+	return data
+
+def get_departments(username):
+	data = open_json_file('authorized.json')
+	department_members = data['departmentMembers']
+
+	for member in department_members:
+		if username == member["username"]:
+			return member["departments"]
+
+	return None
+
+def is_scientific_council_member(username):
+	data = open_json_file('authorized.json')
+	scientific_council_members = data["scientificCouncilMembers"]
+
+	for member in scientific_council_members:
+		if username == member["username"]:
+			return True
+	
+	return False
 
 # Entry point
 def index(request):
@@ -73,16 +100,28 @@ def index(request):
 			user = User.objects.create_user(username, email, def_password)
 			info = FenixAPIUserInfo(code=fenix_user.code, access_token=fenix_user.access_token, refresh_token=fenix_user.refresh_token, token_expires=fenix_user.token_expires, user=user)
 			user = authenticate(username=username, password=def_password)
-			name = person['name']
 			user.first_name = name
 			user.save()
 			info.save()
 
 		if user is not None:
-			if user.is_active:
+			departments = get_departments(user.username)
+			can_login = False
+			# Check if it's a department member
+			if departments is not None:
+				request.session['departments'] = departments
+				request.session['is_department_member'] = True
+				can_login = True
+			
+			# Check if it's a scientific council member
+			if is_scientific_council_member(username):
+				request.session['is_scientific_council_member'] = True
+				can_login = True
+
+			if user.is_active and can_login:
 				login(request, user)
 	
-	context = {'auth_url': url}
+	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session, 'is_scientific_council_member' : 'is_scientific_council_member' in request.session}
 
 	return render(request, 'app/index.html', context)
 
