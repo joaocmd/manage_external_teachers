@@ -90,19 +90,16 @@ class ExternalTeacherForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		arg = kwargs.pop('request', None)
 		super(ExternalTeacherForm, self).__init__(*args, **kwargs)
+		
 		session = arg.session
 		deps = session['departments']
-		choices = (('op1', 'op1'), )
-	
 		choices = [(d['acronym'], d['acronym']) for d in deps]
-		
 		self.fields['department'].widget = Select(choices=choices)
 		
 
 	class Meta:
 		model = ExternalTeacher
-		fields = '__all__'
-		exclude = ('close_date', )
+		fields = ['user', 'hours_per_week', 'department', 'name', 'degree', 'course', 'course_manager', 'notes']
 		widgets = {'notes' : Textarea(), }
 			 
 # Entry point
@@ -203,7 +200,7 @@ def dep_closed(request):
 
 def dep_prop_new(request):
 	if request.method == 'POST':
-		form = ExternalTeacherForm(request.POST)
+		form = ExternalTeacherForm(request.POST, request=request)
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect('/app/dep_opened/')

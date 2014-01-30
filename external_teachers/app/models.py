@@ -35,10 +35,3 @@ class FenixAPIUserInfo(models.Model):
 		user = fenix.User(username=self.user.username, code=self.code, access_token=self.access_token, refresh_token=self.refresh_token, token_expires=self.token_expires)
 		return user
 
-#Forms
-class ExternalTeacherForm(ModelForm):
-	class Meta:
-		model = ExternalTeacher
-		fields = '__all__'
-		exclude = ('close_date', )
-		widgets = {'notes' : Textarea(), 'department' : Select()}
