@@ -11,12 +11,12 @@ class Profile(models.Model):
 
 class ExternalTeacher(models.Model):
 	user = models.ForeignKey(User)
-	is_closed = models.BooleanField()
+	is_closed = models.BooleanField(default=False)
 	close_date = models.DateTimeField('close date', null=True)
 	professional_category = models.CharField(max_length=200, blank=False)
 	hours_per_week = models.DecimalField(decimal_places=2, max_digits=5)
-	park = models.BooleanField()
-	card = models.BooleanField()
+	park = models.BooleanField(default=False)
+	card = models.BooleanField(default=False)
 	department = models.CharField(max_length=200)
 	name = models.CharField(max_length=200)
 	degree = models.CharField(max_length=200)

@@ -37,7 +37,7 @@
 				<th><input type="checkbox" onClick="toggle(this)" /> Toggle All</th>
 				<th>Id</th>
 				<th>Name</th>
-				<th>Professional categoty</th>
+				<th>Professional category</th>
 				<th>Week hours</th>
 				<th>Park</th>
 				<th>Card</th>
@@ -55,16 +55,39 @@
 					</div>
 				<td>{{ external_teacher.user.username }}</td>
 				<td>{{ external_teacher.name }}</td>
+				{% if request.session.is_scientific_council_member %}
+				<td>
+					<div class="form-group">
+						<input type="text" class="form-control" id="" placeholder="">
+					</div>
+				</td>
+				{% else %}
 				<td>{{ external_teacher.professional_category }}</td>
+				{% endif %}
 				<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
+				{% if request.session.is_scientific_council_member %}
+				<td>
+					<div class="form-group">
+						<input type="checkbox" name="" {% if external_teacher.park %} checked {% endif %}>
+						</input>
+					</div>				
+				</td>
+				<td>
+					<div class="form-group">
+						<input type="checkbox" name="" {% if external_teacher.card %} checked {% endif %}>
+						</input>
+					</div>				
+				</td>
+				{% else %}
 				<td>{{ external_teacher.park }}</td>
 				<td>{{ external_teacher.card }}</td>
+				{% endif %}
 				<td>{{ external_teacher.department }}</td>
 				<td>{{ external_teacher.degree }}</td>
 				<td>
 					<!-- Button trigger modal -->
 					<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modal{{ external_teacher.id }}">
-						More info
+						+ info
 					</button>
 					<!-- Modal -->
 					<div class="modal fade" id="modal{{ external_teacher.id }}" tabindex="-1" role="dialog" aria-labelledby="label{{ external_teacher.id }}" aria-hidden="true">
