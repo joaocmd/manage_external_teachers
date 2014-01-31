@@ -53,7 +53,7 @@
 						<input type="checkbox" name="external_teachers" value="{{ external_teacher.id }}"/>
 						</input>
 					</div>
-				<td>{{ external_teacher.user.username }}</td>
+				<td>{{ external_teacher.ist_id }}</td>
 				<td>{{ external_teacher.name }}</td>
 				{% if request.session.is_scientific_council_member and close_action %} 
 				<td>
@@ -105,7 +105,7 @@
 										<table class="table table-striped">
 											<tr>
 												<td>Id:</td>
-												<td>{{ external_teacher.user.username }}</td>
+												<td>{{ external_teacher.ist_id }}</td>
 											</tr>
 											<tr>
 												<td>Name:</td>

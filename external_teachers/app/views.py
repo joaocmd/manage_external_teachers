@@ -114,7 +114,7 @@ class ExternalTeacherForm(ModelForm):
 	class Meta:
 		model = ExternalTeacher
 		fields = ['ist_id', 'name', 'hours_per_week', 'department', 'degree', 'course', 'course_manager', 'notes']
-		widgets = {'notes' : Textarea(), 'name' : TextInput(attrs={'disabled' : 'true'})}
+		widgets = {'notes' : Textarea(), 'name' : TextInput(attrs={'readonly' : 'true'})}
 			 
 # Entry point
 def index(request):
