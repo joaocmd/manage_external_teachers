@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from app.models import ExternalTeacher, FenixAPIUserInfo
 
-from django.forms import ModelForm, Textarea, Select
+from django.forms import ModelForm, Textarea, Select, TextInput
 
 from datetime import datetime
 
@@ -113,8 +113,8 @@ class ExternalTeacherForm(ModelForm):
 
 	class Meta:
 		model = ExternalTeacher
-		fields = ['user', 'hours_per_week', 'department', 'name', 'degree', 'course', 'course_manager', 'notes']
-		widgets = {'notes' : Textarea(), }
+		fields = ['ist_id', 'name', 'hours_per_week', 'department', 'degree', 'course', 'course_manager', 'notes']
+		widgets = {'notes' : Textarea(), 'name' : TextInput(attrs={'disabled' : 'true'})}
 			 
 # Entry point
 def index(request):
@@ -134,7 +134,7 @@ def index(request):
 			user = User.objects.create_user(username, email, def_password)
 			info = FenixAPIUserInfo(code=fenix_user.code, access_token=fenix_user.access_token, refresh_token=fenix_user.refresh_token, token_expires=fenix_user.token_expires, user=user)
 			user = authenticate(username=username, password=def_password)
-			user.first_name = name
+			user.first_name = person['name']
 			user.save()
 			info.save()
 
@@ -158,6 +158,11 @@ def index(request):
 	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session, 'is_scientific_council_member' : 'is_scientific_council_member' in request.session}
 
 	return render(request, 'app/index.html', context)
+
+# Get the name with a given ist id
+def name(request):
+	name = 'XXXxxxXXX XxXXX xxXXX xXXX'
+	return HttpResponse(name)
 
 def about(request):
 	about = fenixAPI.get_about()

@@ -44,7 +44,7 @@ class ExternalTeacher(models.Model):
 				   ('D','Professor Catedrático Convidado'),
 				   ('E','Professor Catedrático'),)
 
-	user = models.ForeignKey(User)
+	ist_id = models.CharField(max_length=20)
 	is_closed = models.BooleanField(default=False)
 	close_date = models.DateTimeField('close date', null=True)
 	professional_category = models.CharField(max_length=1, blank=False, choices=PROFESSIONAL_CATEGORIES)

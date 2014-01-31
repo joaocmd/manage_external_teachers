@@ -19,7 +19,41 @@ active
 	<input type="submit" value="Submit" />
 </form>
 
+<script language="JavaScript">
+	var xmlhttp;
+	if (window.XMLHttpRequest) {
+		// code for IE7+, Firefox, Chrome, Opera, Safari
+	    xmlhttp=new XMLHttpRequest();
+   	}
+   	else {
+	   	// code for IE6, IE5
+	   	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
 
+	var id_field = document.getElementById("id_ist_id");
+	var name_field = document.getElementById("id_name");
+	
+	id_field.onblur = function() {
+		getData()	
+	}
+
+	var dataFromServer;  //declare the variable first
+
+	function getData() {
+		$.ajax({
+			url : '/app/name?username=' + id_field.value,
+			type: 'GET',
+			success : handleData
+		})
+	}
+	
+	function handleData(data) {
+		name_field.value = data
+	}
+
+	
+
+</script>
 
 {% endblock %}
 
