@@ -43,7 +43,6 @@ def process_action(request, external_teachers, close_action, export_action):
 				# Change professional category
 				pro_category = request.POST.getlist('professional_category' + et_id)
 				e_teacher.professional_category = pro_category[0]
-
 				e_teacher.close()
 				e_teacher.save()
 			print(request.POST)
@@ -175,7 +174,7 @@ def sc_opened(request):
 
 	if request.method == 'POST':
 		return process_action(request, external_teachers, close_action, export_action)
-	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
+	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'pro_categories' : ExternalTeacher.PROFESSIONAL_CATEGORIES}
 	return render(request, 'app/sc_opened.html', context)
 
 def sc_closed(request):
