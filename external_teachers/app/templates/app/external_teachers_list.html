@@ -58,7 +58,7 @@
 				{% if request.session.is_scientific_council_member %}
 				<td>
 					<div class="form-group">
-						<input type="text" class="form-control" id="" placeholder="" value="{{ external_teacher.professional_category }}">
+						<input type="text" class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}">
 					</div>
 				</td>
 				{% else %}

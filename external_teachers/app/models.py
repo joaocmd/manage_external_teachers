@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractBaseUser
 from django.forms import ModelForm, Textarea, Select
+from datetime import datetime
 
 import fenix
 
@@ -23,6 +24,10 @@ class ExternalTeacher(models.Model):
 	course = models.CharField(max_length=200)
 	course_manager = models.CharField(max_length=200)
 	notes = models.CharField(max_length=200, blank=True)
+
+	def close(self):
+		self.is_closed = True
+		self.close_date = datetime.now()
 
 class FenixAPIUserInfo(models.Model):
 	user = models.OneToOneField(User)

@@ -28,12 +28,25 @@ def process_action(request, external_teachers, close_action, export_action):
 	
 	if request.POST['action'] == 'close':
 		ids = request.POST.getlist('external_teachers')	
+		ids_park = request.POST.getlist('park')
+		ids_card = request.POST.getlist('card')
 		if ids:
-			for et_id in request.POST.getlist('external_teachers'):
+			# Close proposals
+			for et_id in ids:
 				e_teacher = ExternalTeacher.objects.get(id = et_id)
-				e_teacher.close_date = datetime.now()
-				e_teacher.is_closed = True
+				# Check if authorization to use the park was given
+				if et_id in ids_park:
+					e_teacher.park = True
+				# Check if authorization to use the card was given
+				if et_id in ids_card:
+					e_teacher.card = True
+				# Change professional category
+				pro_category = request.POST.getlist('professional_category' + et_id)
+				e_teacher.professional_category = pro_category[0]
+
+				e_teacher.close()
 				e_teacher.save()
+			print(request.POST)
 			saved = True
 			context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
 			return render(request, 'app/sc_opened.html', context)
