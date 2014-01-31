@@ -55,17 +55,20 @@
 					</div>
 				<td>{{ external_teacher.user.username }}</td>
 				<td>{{ external_teacher.name }}</td>
-				{% if request.session.is_scientific_council_member %}
+				{% if request.session.is_scientific_council_member and close_action %} 
 				<td>
 					<div class="form-group">
-						<input type="text" class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}">
+						<select class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}">
+							{% for category in pro_categories %}
+							<option value="{{ category.0 }}">{{ category.1 }}</option>
+							{% endfor %}
 					</div>
 				</td>
 				{% else %}
-				<td>{{ external_teacher.professional_category }}</td>
+				<td>{{ external_teacher.get_professional_category_display }}</td>
 				{% endif %}
 				<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
-				{% if request.session.is_scientific_council_member %}
+				{% if request.session.is_scientific_council_member and close_action %}
 				<td>
 					<div class="form-group">
 						<input type="checkbox" name="park" value="{{ external_teacher.id }}" {% if external_teacher.park %} checked {% endif %}>
