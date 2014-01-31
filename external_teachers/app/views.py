@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #App views
 
 from django.shortcuts import render
@@ -61,7 +62,8 @@ def process_action(request, external_teachers, close_action, export_action):
 		if ids:
 			for et_id in ids:
 				e_teacher = ExternalTeacher.objects.get(id = et_id)	
-				writer.writerow([e_teacher.user.username, e_teacher.name])
+				writer.writerow([e_teacher.user.username, e_teacher.get_professional_category_display().encode('utf-8'),
+					e_teacher.hours_per_week, e_teacher.park, e_teacher.card, e_teacher.department])
 		
 			return response
 	
