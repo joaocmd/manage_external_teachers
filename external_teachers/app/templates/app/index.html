@@ -1,5 +1,7 @@
 {% extends "app/base.html" %}
 
+{% load i18n %}
+
 {% block navbar_home_active %}
 active
 {% endblock %}
@@ -7,10 +9,10 @@ active
 {% block content %}
 
 <div class="jumbotron">
-	<h1>External Teachers Management tool</h1>
-	<p>This web application allow you to manage external teachers :).</p>
+	<h1>{% trans "External Teachers Management tool" %}</h1>
+	<p>{% trans "This web application allow you to manage external teachers" %}</p>
 	{% if user.is_authenticated %}
-	<p>Welcome {{ role }} </p>
+	<p>{% trans "Welcome" %} user.first_name </p>
 	{% endif %}
 </div>
 

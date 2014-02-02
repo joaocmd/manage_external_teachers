@@ -7,6 +7,5 @@ active
 {% block content %}
 {% load i18n %}
 <p>{% trans "This is an application to manage external teachers"  %}</p>
-<p>{% get_current_language as LANGUAGE_CODE %}</p>
-<p>{{ LANGUAGE_CODE }}</p>
+<p>{% trans "Developed by" %}: DSI 
 {% endblock %}

@@ -29,29 +29,29 @@
 						<span class="icon-bar"></span>
 		   				<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="/app">External Teachers</a>
+					<a class="navbar-brand" href="/app">{% trans "External Teachers" %}</a>
 				</div>
 				
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li class="{% block navbar_home_active %} {% endblock %}"><a href="/app">Home</a></li>
-						<li class="{% block navbar_about_active %} {% endblock %}"><a href="/app/about">About</a></li>
+						<li class="{% block navbar_about_active %} {% endblock %}"><a href="/app/about">{% trans "About" %}</a></li>
 						{% if user.is_authenticated %}
 						{% if request.session.is_scientific_council_member %}
 						<li class="dropdown {% block navbar_sc_active %} {% endblock %}">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Scientific Council<span class="caret"></span></a>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">{% trans "Scientific Council" %}<span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/app/sc_opened">Opened</a></li>
-								<li><a href="/app/sc_closed">Closed</a></li>
+								<li><a href="/app/sc_opened">{% trans "Opened"</a></li>
+								<li><a href="/app/sc_closed">{% trans "Closed"</a></li>
 							</ul>
 							</li>
 						{% endif %}
 						{% if request.session.is_department_member %}
 						<li class="dropdown {% block navbar_dep_active %} {% endblock %}">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Department<span class="caret"></span></a>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">{% trans "Department" %}<span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/app/dep_opened">Opened</a></li>
-								<li><a href="/app/dep_closed">Closed</a></li>
+								<li><a href="/app/dep_opened">{% trans "Opened" %}</a></li>
+								<li><a href="/app/dep_closed">{% trans "Closed" %}</a></li>
 							</ul>
 						</li>
 						{% endif %}
