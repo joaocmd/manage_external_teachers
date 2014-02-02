@@ -4,3 +4,4 @@
 local_settings.py
 fenixedu.ini
 authorized.json
+db.sqlite3
