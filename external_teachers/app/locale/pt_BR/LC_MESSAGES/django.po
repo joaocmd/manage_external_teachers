@@ -184,7 +184,7 @@ msgstr "Observações"
 
 #: templates/app/index.html:12
 msgid "External Teachers Management tool"
-msgstr "Ferramenta de gestão de docentes externos"
+msgstr "Docentes externos"
 
 #: templates/app/index.html:13
 msgid "This web application allow you to manage external teachers"
