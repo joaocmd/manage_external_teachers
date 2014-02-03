@@ -110,6 +110,14 @@ def is_scientific_council_member(username):
 	
 	return False
 
+def get_user_dep_acronyms(request):
+	acronyms = []
+	for dep in request.session["departments"]:
+		acronyms.append(dep['acronym'])
+
+	return acronyms
+
+
 # Forms
 class ExternalTeacherForm(ModelForm):
 
@@ -166,6 +174,7 @@ def index(request):
 			if departments is not None:
 				request.session['departments'] = departments
 				request.session['is_department_member'] = True
+				request.session['dep_acronyms'] = get_user_dep_acronyms(request)
 				can_login = True
 			
 			# Check if it's a scientific council member
@@ -217,7 +226,7 @@ def sc_closed(request):
 	return render(request, 'app/sc_closed.html', context)
 
 def dep_opened(request):
-	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
+	external_teachers = ExternalTeacher.objects.filter(is_closed = False, department__in = request.session['dep_acronyms'])
 	close_action = False
 	export_action = True
 
@@ -230,7 +239,7 @@ def dep_opened(request):
 def dep_closed(request):
 	close_action = False
 	export_action = True
-	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
+	external_teachers = ExternalTeacher.objects.filter(is_closed = True, department__in = request.session["dep_acronyms"])
 	
 	if request.method == 'POST':
 		return process_action(request, external_teachers, close_action, export_action)
