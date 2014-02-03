@@ -36,7 +36,7 @@ msgstr "Nome"
 
 #: views.py:136
 msgid "hours_per_week"
-msgstr "Horas por semana"
+msgstr "N.º de horas lectivas devidas por semana"
 
 #: views.py:137
 msgid "department"
@@ -129,12 +129,12 @@ msgstr "Categoria profissional"
 
 #: templates/app/external_teachers_list.html:43
 msgid "Week hours"
-msgstr "Horas por semana"
+msgstr "N.º de horas lectivas devidas por semana"
 
 #: templates/app/external_teachers_list.html:44
 #: templates/app/external_teachers_list.html:136
 msgid "Park"
-msgstr "Parque de estacionamento"
+msgstr "Parque"
 
 #: templates/app/external_teachers_list.html:45
 #: templates/app/external_teachers_list.html:140
