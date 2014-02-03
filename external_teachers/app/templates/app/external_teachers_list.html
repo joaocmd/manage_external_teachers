@@ -118,7 +118,11 @@
 												<td>{{ external_teacher.is_closed|yesno:_("yes,no") }}</td>
 											</tr>
 												<td>{% trans "Close date" %}:</td>
+												{% if external_teacher.close_date %}
 												<td>{{ external_teacher.close_date }}</td>
+												{% else %}
+												<td>{% trans "None" %}</td>
+												{% endif %}
 											</tr>
 											<tr>
 												<td>{% trans "Professional category" %}:</td>
