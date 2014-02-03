@@ -1,24 +1,28 @@
 # -*- coding: utf-8 -*-
 #App views
 
+# Http response
 from django.shortcuts import render
-
 from django.http import HttpResponse, HttpResponseRedirect
 
+# Models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-
 from app.models import ExternalTeacher, FenixAPIUserInfo
 
+# Form widgets
 from django.forms import ModelForm, Textarea, Select, TextInput
 
-from datetime import datetime
+# Internationalization
+from django.utils.translation import ugettext_lazy as _
 
+# Utils
+from datetime import datetime
 import csv
+import os
 
 import fenix
 
-import os
 
 fenixAPI = fenix.FenixAPISingleton()
 def_password = '0'
@@ -46,7 +50,6 @@ def process_action(request, external_teachers, close_action, export_action):
 				e_teacher.professional_category = pro_category[0]
 				e_teacher.close()
 				e_teacher.save()
-			print(request.POST)
 			saved = True
 			context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
 			return render(request, 'app/sc_opened.html', context)
@@ -62,8 +65,17 @@ def process_action(request, external_teachers, close_action, export_action):
 		if ids:
 			for et_id in ids:
 				e_teacher = ExternalTeacher.objects.get(id = et_id)	
+				if e_teacher.park:
+					park = _('True')
+				else:
+					park = _('False')
+
+				if e_teacher.card:
+					card = _('True')
+				else:
+					card = _('False')
 				writer.writerow([e_teacher.ist_id, e_teacher.get_professional_category_display().encode('utf-8'),
-					e_teacher.hours_per_week, e_teacher.park, e_teacher.card, e_teacher.department])
+					e_teacher.hours_per_week, park.encode('utf-8'), card.encode('utf-8'), e_teacher.department])
 		
 			return response
 	
@@ -109,7 +121,16 @@ class ExternalTeacherForm(ModelForm):
 		deps = session['departments']
 		choices = [(d['acronym'], d['acronym']) for d in deps]
 		self.fields['department'].widget = Select(choices=choices)
-		
+
+		# Labels internationalization
+		self.fields['ist_id'].label = _('IST ID')
+		self.fields['name'].label = _('name')
+		self.fields['hours_per_week'].label = _('hours_per_week')
+		self.fields['department'].label = _('department')
+		self.fields['degree'].label = _('degree')
+		self.fields['course'].label = _('course')
+		self.fields['course_manager'].label = _('course_manager')
+		self.fields['notes'].label = _('notes')
 
 	class Meta:
 		model = ExternalTeacher

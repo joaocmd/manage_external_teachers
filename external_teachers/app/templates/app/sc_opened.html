@@ -1,5 +1,7 @@
 {% extends "app/base.html" %}
 
+{% load i18n %}
+
 {% block navbar_sc_active %}
 active
 {% endblock%}
@@ -7,9 +9,9 @@ active
 {% block content %}
 
 
-<h1>Opened proposals for external Teachers: {{ external_teachers.count }}</h1>
+<h1>{% trans "Opened proposals for external Teachers" %}: {{ external_teachers.count }}</h1>
 
-<p>{% if saved %} Selected proposals have been closed {% endif %}</p>
+<p>{% if saved %} {% trans "Selected proposals have been closed" %} {% endif %}</p>
 
 {% include "app/external_teachers_list.html" %}
 

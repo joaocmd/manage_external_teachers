@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Textarea, Select
 from datetime import datetime
+from django.utils.translation import ugettext_lazy as _
 
 import fenix
 
@@ -45,7 +46,7 @@ class ExternalTeacher(models.Model):
 				   ('E','Professor Catedrático'),)
 
 	ist_id = models.CharField(max_length=20)
-	is_closed = models.BooleanField(default=False)
+	is_closed = models.BooleanField( default=False)
 	close_date = models.DateTimeField('close date', null=True)
 	professional_category = models.CharField(max_length=1, blank=False, choices=PROFESSIONAL_CATEGORIES)
 	hours_per_week = models.DecimalField(decimal_places=2, max_digits=5)

@@ -1,12 +1,14 @@
 {% extends "app/base.html" %}
 
+{% load i18n %}
+
 {% block navbar_dep_active %}
 active
 {% endblock %}
 
 {% block content %}
 
-<h1>Closed proposals for external teachers: {{ external_teachers.count }}</h1>
+<h1>{% trans "Closed proposals for external teachers" %}: {{ external_teachers.count }}</h1>
 
 {% include "app/external_teachers_list.html" %}
 

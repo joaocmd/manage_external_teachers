@@ -1,5 +1,7 @@
 {% extends "app/base.html" %}
 
+{% load i18n %}
+
 {% load app %}
 {% block navbar_dep_active %}
 active
@@ -16,20 +18,11 @@ active
 		{{ field|addcss:"form-control" }}
 	</div>
 	{% endfor %}
-	<input type="submit" value="Submit" />
+	<input type="submit" value="{% trans "Submit" %}" />
 </form>
 
 <script language="JavaScript">
-	var xmlhttp;
-	if (window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
-	    xmlhttp=new XMLHttpRequest();
-   	}
-   	else {
-	   	// code for IE6, IE5
-	   	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-
+	
 	var id_field = document.getElementById("id_ist_id");
 	var name_field = document.getElementById("id_name");
 	

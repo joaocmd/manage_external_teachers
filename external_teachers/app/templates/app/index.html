@@ -12,7 +12,7 @@ active
 	<h1>{% trans "External Teachers Management tool" %}</h1>
 	<p>{% trans "This web application allow you to manage external teachers" %}</p>
 	{% if user.is_authenticated %}
-	<p>{% trans "Welcome" %} user.first_name </p>
+	<p>{% trans "Welcome" %} {{ user.first_name }}</p>
 	{% endif %}
 </div>
 
