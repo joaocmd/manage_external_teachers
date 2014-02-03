@@ -164,7 +164,7 @@ msgstr "Formação académica"
 #: templates/app/external_teachers_list.html:133
 #: templates/app/external_teachers_list.html:137
 msgid "yes,no"
-msgstr "S,N"
+msgstr "Sim,Não"
 
 #: templates/app/external_teachers_list.html:117
 msgid "Is closed"
