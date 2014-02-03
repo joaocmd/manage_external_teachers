@@ -35,7 +35,6 @@
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li class="{% block navbar_home_active %} {% endblock %}"><a href="/app">Home</a></li>
-						<li class="{% block navbar_about_active %} {% endblock %}"><a href="/app/about">{% trans "About" %}</a></li>
 						{% if user.is_authenticated %}
 						{% if request.session.is_scientific_council_member %}
 						<li class="dropdown {% block navbar_sc_active %} {% endblock %}">
