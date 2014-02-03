@@ -27,6 +27,8 @@ import fenix
 fenixAPI = fenix.FenixAPISingleton()
 def_password = '0'
 
+JSON_FILE = 'departmentMembers_prod.json'
+
 # Helper functions:
 def process_action(request, external_teachers, close_action, export_action):
 	saved = False
@@ -91,7 +93,7 @@ def open_json_file(filename):
 	return data
 
 def get_departments(username):
-	data = open_json_file('authorized.json')
+	data = open_json_file(JSON_FILE)
 	department_members = data['departmentMembers']
 
 	for member in department_members:
@@ -101,7 +103,7 @@ def get_departments(username):
 	return None
 
 def is_scientific_council_member(username):
-	data = open_json_file('authorized.json')
+	data = open_json_file(JSON_FILE)
 	scientific_council_members = data["scientificCouncilMembers"]
 
 	for member in scientific_council_members:
@@ -110,11 +112,31 @@ def is_scientific_council_member(username):
 	
 	return False
 
+def is_admin(username):
+	data = open_json_file(JSON_FILE)
+	admins = data['admins']
+
+	for member in admins:
+		if username == member['username']:
+			return True
+	
+	return False
+
+def get_all_departments():
+	data = open_json_file(JSON_FILE)
+	department_members = data['departmentMembers']
+	departments = []
+	
+	for member in department_members:
+		for dep in member['departments']:
+			if dep not in departments:
+				departments.append(dep)
+	return departments
+
 def get_user_dep_acronyms(request):
 	acronyms = []
 	for dep in request.session["departments"]:
 		acronyms.append(dep['acronym'])
-
 	return acronyms
 
 
@@ -168,17 +190,29 @@ def index(request):
 			info.save()
 
 		if user is not None:
-			departments = get_departments(user.username)
+			if is_admin(username):
+				departments = get_all_departments()
+			else:
+				departments = get_departments(user.username)
+			
 			can_login = False
+
+			if is_admin(username):
+				request.session['departments'] = departments
+				request.session['is_department_member'] = True
+				request.session['dep_acronyms'] = get_user_dep_acronyms(request)
+				request.session['is_scientific_council_member'] = True
+				can_login = True
+				
 			# Check if it's a department member
-			if departments is not None:
+			elif departments is not None:
 				request.session['departments'] = departments
 				request.session['is_department_member'] = True
 				request.session['dep_acronyms'] = get_user_dep_acronyms(request)
 				can_login = True
 			
 			# Check if it's a scientific council member
-			if is_scientific_council_member(username):
+			elif is_scientific_council_member(username):
 				request.session['is_scientific_council_member'] = True
 				can_login = True
 
