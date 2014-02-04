@@ -1,0 +1,212 @@
+# Translation in portuguese.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-03 16:31+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: views.py:69 views.py:74
+msgid "True"
+msgstr "S"
+
+#: views.py:71 views.py:76
+msgid "False"
+msgstr "N"
+
+#: views.py:134
+msgid "IST ID"
+msgstr "IST ID"
+
+#: views.py:135
+msgid "name"
+msgstr "Nome"
+
+#: views.py:136
+msgid "hours_per_week"
+msgstr "N.º de horas lectivas devidas por semana"
+
+#: views.py:137
+msgid "department"
+msgstr "Departamento"
+
+#: views.py:138
+msgid "degree"
+msgstr "Formação académica"
+
+#: views.py:139
+msgid "course"
+msgstr "Unidade curricular"
+
+#: views.py:140
+msgid "course_manager"
+msgstr "Responsável da unidade curricular"
+
+#: views.py:141
+msgid "notes"
+msgstr "Observações"
+
+#: templates/app/base.html:32
+msgid "External Teachers"
+msgstr "Docentes externos"
+
+#: templates/app/base.html:41
+msgid "Scientific Council"
+msgstr "Conselho científico"
+
+#: templates/app/base.html:43 templates/app/base.html.py:52
+msgid "Opened"
+msgstr "Propostas em aberto"
+
+#: templates/app/base.html:44 templates/app/base.html.py:53
+msgid "Closed"
+msgstr "Propostas fechadas"
+
+#: templates/app/base.html:50 templates/app/external_teachers_list.html:46
+#: templates/app/external_teachers_list.html:144
+msgid "Department"
+msgstr "Departamento"
+
+#: templates/app/dep_closed.html:11 templates/app/sc_closed.html:11
+msgid "Closed proposals for external teachers"
+msgstr "Propostas fechadas"
+
+#: templates/app/dep_opened.html:13
+msgid "Add new possible external teacher"
+msgstr "Adicionar proposta para docente externo"
+
+#: templates/app/dep_opened.html:16
+msgid "Opened proposals for external teachers"
+msgstr "Propostas em aberto"
+
+#: templates/app/dep_prop_new.html:21
+msgid "Submit"
+msgstr "Submeter"
+
+#: templates/app/external_teachers_list.html:21
+#: templates/app/external_teachers_list.html:167
+msgid "Close"
+msgstr "Fechar"
+
+#: templates/app/external_teachers_list.html:24
+msgid "Export to CSV file"
+msgstr "Exportar para ficheiro CSV"
+
+#: templates/app/external_teachers_list.html:30
+msgid "Do"
+msgstr "Aplicar aos elementos selecionados"
+
+#: templates/app/external_teachers_list.html:39
+msgid "Toggle All"
+msgstr "Selecionar todos"
+
+#: templates/app/external_teachers_list.html:40
+#: templates/app/external_teachers_list.html:109
+msgid "Id"
+msgstr "ID"
+
+#: templates/app/external_teachers_list.html:41
+#: templates/app/external_teachers_list.html:113
+msgid "Name"
+msgstr "Nome"
+
+#: templates/app/external_teachers_list.html:42
+#: templates/app/external_teachers_list.html:128
+msgid "Professional category"
+msgstr "Categoria profissional"
+
+#: templates/app/external_teachers_list.html:43
+msgid "Week hours"
+msgstr "N.º de horas lectivas devidas por semana"
+
+#: templates/app/external_teachers_list.html:44
+#: templates/app/external_teachers_list.html:136
+msgid "Park"
+msgstr "Parque"
+
+#: templates/app/external_teachers_list.html:45
+#: templates/app/external_teachers_list.html:140
+msgid "Card"
+msgstr "Cartão"
+
+#: templates/app/external_teachers_list.html:47
+#: templates/app/external_teachers_list.html:148
+msgid "Degree"
+msgstr "Formação académica"
+
+#: templates/app/external_teachers_list.html:87
+#: templates/app/external_teachers_list.html:88
+#: templates/app/external_teachers_list.html:118
+#: templates/app/external_teachers_list.html:137
+#: templates/app/external_teachers_list.html:141
+msgid "yes,no"
+msgstr "Sim,Não"
+
+#: templates/app/external_teachers_list.html:117
+msgid "Is closed"
+msgstr "Fechada?"
+
+#: templates/app/external_teachers_list.html:120
+msgid "Close date"
+msgstr "Data de fecho"
+
+#: templates/app/external_teachers_list.html:124
+msgid "None"
+msgstr "ND"
+
+#: templates/app/external_teachers_list.html:132
+msgid "Hours per week"
+msgstr "Horas por semana"
+
+#: templates/app/external_teachers_list.html:152
+msgid "Course"
+msgstr "Unidade curricular"
+
+#: templates/app/external_teachers_list.html:156
+msgid "Course manager"
+msgstr "Responsável da unidade curricular"
+
+#: templates/app/external_teachers_list.html:160
+msgid "Notes"
+msgstr "Observações"
+
+#: templates/app/index.html:12
+msgid "External Teachers Management tool"
+msgstr "Docentes externos"
+
+#: templates/app/index.html:13
+msgid "This web application allow you to manage external teachers"
+msgstr "  "
+
+#: templates/app/index.html:15
+msgid "Welcome"
+msgstr "Bem-vindo(a)"
+
+#: templates/app/sc_opened.html:12
+msgid "Opened proposals for external Teachers"
+msgstr "Propostas em aberto"
+
+#: templates/app/sc_opened.html:14
+msgid "Selected proposals have been closed"
+msgstr "As propostas seleccionadas foram fechadas com sucesso"
+
+#~ msgid "This is an application to manage external teachers"
+#~ msgstr "Aplicação para gestão de docentes externos"
+
+#~ msgid "Developed by"
+#~ msgstr "Desenvolvido por"
+
+#~ msgid "About"
+#~ msgstr "Sobre"
