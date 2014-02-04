@@ -30,7 +30,7 @@ def_password = '0'
 JSON_FILE = 'departmentMembers_prod.json'
 
 # Helper functions:
-def process_action(request, external_teachers, close_action, export_action):
+def process_action(request, template, external_teachers, close_action, export_action):
 	saved = False
 	
 	if request.POST['action'] == 'close':
@@ -82,7 +82,7 @@ def process_action(request, external_teachers, close_action, export_action):
 			return response
 	
 	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
-	return render(request, 'app/sc_opened.html', context)
+	return render(request, template, context)
 
 import json
 
@@ -242,44 +242,49 @@ def sc_opened(request):
 	saved = False
 	close_action = True
 	export_action = True
+	template = 'app/sc_opened.html'
 
 	if request.method == 'POST':
-		return process_action(request, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action)
+	
 	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'pro_categories' : ExternalTeacher.PROFESSIONAL_CATEGORIES}
-	return render(request, 'app/sc_opened.html', context)
+	return render(request, template, context)
 
 def sc_closed(request):
 	close_action = False
 	export_action = True
+	template = 'app/sc_closed.html'
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
 
 	if request.method == 'POST':
-		return process_action(request, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action)
 
 	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
-	return render(request, 'app/sc_closed.html', context)
+	return render(request, template, context)
 
 def dep_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False, department__in = request.session['dep_acronyms'])
 	close_action = False
 	export_action = True
+	template = 'app/dep_opened.html'
 
 	if request.method == 'POST':
-		return process_action(request, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action)
 
 	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
-	return render(request, 'app/dep_opened.html', context)
+	return render(request, template, context)
 
 def dep_closed(request):
 	close_action = False
 	export_action = True
+	template = 'app/dep_closed.html'
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True, department__in = request.session["dep_acronyms"])
 	
 	if request.method == 'POST':
-		return process_action(request, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action)
 
 	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
-	return render(request, 'app/dep_closed.html', context)
+	return render(request, template, context)
 
 def dep_prop_new(request):
 	if request.method == 'POST':
