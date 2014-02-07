@@ -22,10 +22,10 @@ active
 </form>
 
 <script language="JavaScript">
-	
+
 	var id_field = document.getElementById("id_ist_id");
 	var name_field = document.getElementById("id_name");
-	
+
 	id_field.onblur = function() {
 		getData()	
 	}
@@ -39,12 +39,12 @@ active
 			success : handleData
 		})
 	}
-	
+
 	function handleData(data) {
 		name_field.value = data
 	}
 
-	
+
 
 </script>
 
