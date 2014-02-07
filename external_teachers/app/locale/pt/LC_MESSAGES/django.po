@@ -56,7 +56,7 @@ msgstr "Responsável da unidade curricular"
 
 #: views.py:173
 msgid "costs_center"
-msgstr "Centro de custos"
+msgstr "Centro de Custos que Suporta o Complemento de Bolsa (Opcional)"
 
 #: views.py:174
 msgid "notes"
@@ -192,7 +192,7 @@ msgstr "Responsável da unidade curricular"
 
 #: templates/app/external_teachers_list.html:173
 msgid "Costs Center"
-msgstr "Centro de custos"
+msgstr "Centro de Custos que Suporta o Complemento de Bolsa"
 
 #: templates/app/external_teachers_list.html:178
 msgid "Notes"
