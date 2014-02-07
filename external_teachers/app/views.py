@@ -30,7 +30,7 @@ def_password = '0'
 JSON_FILE = 'departmentMembers_prod.json'
 
 # Helper functions:
-def process_action(request, template, external_teachers, close_action, export_action):
+def process_action(request, template, external_teachers, close_action, export_action, delete_action):
 	saved = False
 	
 	if request.POST['action'] == 'close':
@@ -53,7 +53,7 @@ def process_action(request, template, external_teachers, close_action, export_ac
 				e_teacher.close()
 				e_teacher.save()
 			saved = True
-			context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
+			context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
 			return render(request, 'app/sc_opened.html', context)
 
 	elif request.POST['action'] == 'export':
@@ -81,7 +81,17 @@ def process_action(request, template, external_teachers, close_action, export_ac
 		
 			return response
 	
-	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action}
+	elif request.POST['action'] == 'delete':
+		ids = request.POST.getlist('external_teachers')
+		if ids:
+			# Delete proposals
+			for et_id in ids:
+				e_teacher = ExternalTeacher.objects.get(id = et_id)
+				e_teacher.delete()
+				context = {'external_teachers' : external_teachers, 'deleted' : True, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
+				
+	
+	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
 	return render(request, template, context)
 
 import json
@@ -160,11 +170,14 @@ class ExternalTeacherForm(ModelForm):
 		self.fields['degree'].label = _('degree')
 		self.fields['course'].label = _('course')
 		self.fields['course_manager'].label = _('course_manager')
+		self.fields['costs_center'].label = _('costs_center')
 		self.fields['notes'].label = _('notes')
 
 	class Meta:
 		model = ExternalTeacher
-		fields = ['ist_id', 'name', 'hours_per_week', 'department', 'degree', 'course', 'course_manager', 'notes']
+		fields = ['ist_id', 'name', 'hours_per_week', 'department', 
+				'degree', 'course', 'course_manager', 'costs_center', 'notes']
+
 		widgets = {'notes' : Textarea(), 'name' : TextInput(attrs={'readonly' : 'true'})}
 			 
 # Entry point
@@ -219,7 +232,8 @@ def index(request):
 			if user.is_active and can_login:
 				login(request, user)
 	
-	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session, 'is_scientific_council_member' : 'is_scientific_council_member' in request.session}
+	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session, 
+			'is_scientific_council_member' : 'is_scientific_council_member' in request.session}
 
 	return render(request, 'app/index.html', context)
 
@@ -242,48 +256,57 @@ def sc_opened(request):
 	saved = False
 	close_action = True
 	export_action = True
+	delete_action = True
 	template = 'app/sc_opened.html'
 
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
 	
-	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'pro_categories' : ExternalTeacher.PROFESSIONAL_CATEGORIES}
+	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 
+			'export_action' : export_action, 'delete_action' : delete_action, 
+			'pro_categories' : ExternalTeacher.PROFESSIONAL_CATEGORIES}
 	return render(request, template, context)
 
 def sc_closed(request):
 	close_action = False
 	export_action = True
+	delete_action = False
 	template = 'app/sc_closed.html'
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
 
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action, 
+			'delete_action' : delete_action}
 	return render(request, template, context)
 
 def dep_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False, department__in = request.session['dep_acronyms'])
 	close_action = False
 	export_action = True
+	delete_action = True
 	template = 'app/dep_opened.html'
 
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action, 
+			'delete_action' : delete_action, 'can_edit' : True}
 	return render(request, template, context)
 
 def dep_closed(request):
 	close_action = False
 	export_action = True
+	delete_action = False
 	template = 'app/dep_closed.html'
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True, department__in = request.session["dep_acronyms"])
 	
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action)
+		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action}
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action,
+			'delete_action' : delete_action}
 	return render(request, template, context)
 
 def dep_prop_new(request):
@@ -296,5 +319,25 @@ def dep_prop_new(request):
 		form = ExternalTeacherForm(request=request)
 
 	context = {'form' : form}
-	return render(request, 'app/dep_prop_new.html', context)
+	return render(request, 'app/external_teacher_form.html', context)
+
+def edit(request, pk):
+	template = 'app/dep_opened.html'
+	external_teacher = ExternalTeacher.objects.get(id=pk)
+	
+	# Its not supposed to try to edit a closed one
+	if external_teacher.is_closed:
+		return render(request, template, {'error' : 'ERROR: This proposal is closed'})
+
+	if request.method == 'POST':
+		form = ExternalTeacherForm(request.POST, request=request, instance=external_teacher)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/app/dep_opened/')
+	else:
+		form = ExternalTeacherForm(request=request, instance=external_teacher)
+
+	context = {'form' : form}
+	return render(request, 'app/external_teacher_form.html', context)
+
 

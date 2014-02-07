@@ -23,6 +23,10 @@
 				{% if export_action %}
 				<option value="export">{% trans "Export to CSV file" %}</option>
 				{% endif %}
+				{% if delete_action %}
+				<option value="delete">{% trans "Delete" %}</option>
+				{% endif %}
+
 			</select>
 		</div>
 		<div class="col-xs-4">
@@ -45,6 +49,8 @@
 				<th>{% trans "Card" %}</th>
 				<th>{% trans "Department" %}</th>
 				<th>{% trans "Degree" %}</th>
+				<th></th>
+				<th></th>
 				<th></th>
 
 			</tr>
@@ -92,8 +98,20 @@
 				<td>
 					<!-- Button trigger modal -->
 					<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modal{{ external_teacher.id }}">
-						+ info
+						<span class="glyphicon glyphicon-info-sign"></span>
+						{% trans "+ Info" %}
 					</button>
+				</td>
+				<td>
+					{% if can_edit %}
+					<a href="/app/edit/{{ external_teacher.id }}">
+						<button type="button" class="btn btn-primary btn-lg">
+							<span class="glyphicon glyphicon-pencil"></span> {% trans "Edit" %}
+						</button>
+					</a>
+					{% endif %}
+				</td>
+				<td>
 					<!-- Modal -->
 					<div class="modal fade" id="modal{{ external_teacher.id }}" tabindex="-1" role="dialog" aria-labelledby="label{{ external_teacher.id }}" aria-hidden="true">
 						<div class="modal-dialog">
@@ -154,11 +172,16 @@
 											</tr>
 											<tr>
 												<td>{% trans "Course manager" %}:</td>
-												<td>{{external_teacher.course_manager}}</td>
+												<td>{{ external_teacher.course_manager }}</td>
 											</tr>
 											<tr>
+												<td>{% trans "Costs Center" %}:</td>
+												<td>{{ external_teacher.costs_center }}</td>
+											</tr>
+											
+											<tr>
 												<td>{% trans "Notes" %}:</td>
-												<td>{{external_teacher.notes}}</td>
+												<td>{{ external_teacher.notes }}</td>
 											</tr>
 										</table>
 									</div> <!-- End of responsive table-->

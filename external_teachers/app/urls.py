@@ -15,4 +15,5 @@ urlpatterns = patterns('',
 		url(r'^dep_closed/', views.dep_closed, name='dep_closed'),
 		url(r'^dep_prop_new/', views.dep_prop_new, name='dep_prop_new'),
 		url(r'^name/', views.name, name='name'),
+		url(r'^edit/(?P<pk>\d+)/$', views.edit, name='edit'),
 )
