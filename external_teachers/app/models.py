@@ -57,6 +57,7 @@ class ExternalTeacher(models.Model):
 	degree = models.CharField(max_length=200)
 	course = models.CharField(max_length=200)
 	course_manager = models.CharField(max_length=200)
+	costs_center = models.CharField(max_length=200, blank=True)
 	notes = models.CharField(max_length=200, blank=True)
 
 	def close(self):
