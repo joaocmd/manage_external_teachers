@@ -102,8 +102,7 @@ def open_json_file(filename):
 	data = json.load(json_data)
 	return data
 
-def get_departments(username):
-	data = open_json_file(JSON_FILE)
+def get_departments(username, data):
 	department_members = data['departmentMembers']
 
 	for member in department_members:
@@ -112,8 +111,7 @@ def get_departments(username):
 
 	return None
 
-def is_scientific_council_member(username):
-	data = open_json_file(JSON_FILE)
+def is_scientific_council_member(username, data):
 	scientific_council_members = data["scientificCouncilMembers"]
 
 	for member in scientific_council_members:
@@ -122,8 +120,7 @@ def is_scientific_council_member(username):
 	
 	return False
 
-def is_admin(username):
-	data = open_json_file(JSON_FILE)
+def is_admin(username, data):
 	admins = data['admins']
 
 	for member in admins:
@@ -132,8 +129,7 @@ def is_admin(username):
 	
 	return False
 
-def get_all_departments():
-	data = open_json_file(JSON_FILE)
+def get_all_departments(data):
 	department_members = data['departmentMembers']
 	departments = []
 	
@@ -148,7 +144,6 @@ def get_user_dep_acronyms(request):
 	for dep in request.session["departments"]:
 		acronyms.append(dep['acronym'])
 	return acronyms
-
 
 # Forms
 class ExternalTeacherForm(ModelForm):
@@ -184,6 +179,7 @@ class ExternalTeacherForm(ModelForm):
 def index(request):
 	url = fenixAPI.get_authentication_url()
 	code = request.GET.get('code')
+	json_data = open_json_file(JSON_FILE)
 
 	if code and not request.user.is_authenticated():
 		fenix_user = fenix.User()
@@ -203,14 +199,14 @@ def index(request):
 			info.save()
 
 		if user is not None:
-			if is_admin(username):
-				departments = get_all_departments()
+			if is_admin(username, json_data):
+				departments = get_all_departments(json_data)
 			else:
-				departments = get_departments(user.username)
+				departments = get_departments(user.username, json_data)
 			
 			can_login = False
 
-			if is_admin(username):
+			if is_admin(username, json_data):
 				request.session['departments'] = departments
 				request.session['is_department_member'] = True
 				request.session['dep_acronyms'] = get_user_dep_acronyms(request)
@@ -225,7 +221,7 @@ def index(request):
 				can_login = True
 			
 			# Check if it's a scientific council member
-			elif is_scientific_council_member(username):
+			if is_scientific_council_member(username, json_data):
 				request.session['is_scientific_council_member'] = True
 				can_login = True
 
