@@ -336,4 +336,42 @@ def edit(request, pk):
 	context = {'form' : form}
 	return render(request, 'app/external_teacher_form.html', context)
 
+def change_park(request, pk):
+	value = request.GET.get("value")
+	external_teacher = ExternalTeacher.objects.get(id=pk)
 
+	if value == 'true':
+		external_teacher.park = True
+		response = _('Yes')
+	else:
+		external_teacher.park = False
+		response = _('No')
+
+	external_teacher.save()
+	
+	return HttpResponse(response)
+
+def change_card(request, pk):
+	value = request.GET.get("value")
+	external_teacher = ExternalTeacher.objects.get(id=pk)
+
+	if value == 'true':
+		external_teacher.card = True
+		response = _('Yes')
+	else:
+		external_teacher.card = False
+		response = _('No')
+
+	external_teacher.save()
+
+	return HttpResponse(response)
+
+def change_professional_category(request, pk):
+	value = request.GET.get("value")
+	external_teacher = ExternalTeacher.objects.get(id=pk)
+	external_teacher.professional_category = value
+
+	external_teacher.save()
+
+	return HttpResponse(external_teacher.get_professional_category_display())
+	

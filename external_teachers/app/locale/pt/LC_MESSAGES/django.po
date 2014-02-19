@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-07 17:39+0000\n"
+"POT-Creation-Date: 2014-02-19 17:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,41 +26,49 @@ msgstr "S"
 msgid "False"
 msgstr "N"
 
-#: views.py:166
+#: views.py:161
 msgid "IST ID"
 msgstr "IST ID"
 
-#: views.py:167
+#: views.py:162
 msgid "name"
 msgstr "Nome"
 
-#: views.py:168
+#: views.py:163
 msgid "hours_per_week"
 msgstr "N.º de horas lectivas devidas por semana"
 
-#: views.py:169
+#: views.py:164
 msgid "department"
 msgstr "Departamento"
 
-#: views.py:170
+#: views.py:165
 msgid "degree"
 msgstr "Formação académica"
 
-#: views.py:171
+#: views.py:166
 msgid "course"
 msgstr "Unidade curricular"
 
-#: views.py:172
+#: views.py:167
 msgid "course_manager"
 msgstr "Responsável da unidade curricular"
 
-#: views.py:173
+#: views.py:168
 msgid "costs_center"
 msgstr "Centro de Custos que Suporta o Complemento de Bolsa (Opcional)"
 
-#: views.py:174
+#: views.py:169
 msgid "notes"
 msgstr "Observações"
+
+#: views.py:345 views.py:360
+msgid "Yes"
+msgstr "Sim"
+
+#: views.py:348 views.py:363
+msgid "No"
+msgstr "Não"
 
 #: templates/app/base.html:32
 msgid "External Teachers"
@@ -78,8 +86,8 @@ msgstr "Propostas em aberto"
 msgid "Closed"
 msgstr "Propostas fechadas"
 
-#: templates/app/base.html:50 templates/app/external_teachers_list.html:50
-#: templates/app/external_teachers_list.html:157
+#: templates/app/base.html:50 templates/app/external_teachers_list.html:104
+#: templates/app/external_teachers_list.html:221
 msgid "Department"
 msgstr "Departamento"
 
@@ -87,11 +95,11 @@ msgstr "Departamento"
 msgid "Closed proposals for external teachers"
 msgstr "Propostas fechadas"
 
-#: templates/app/dep_opened.html:15
+#: templates/app/dep_opened.html:17
 msgid "Add new possible external teacher"
 msgstr "Adicionar proposta para docente externo"
 
-#: templates/app/dep_opened.html:19
+#: templates/app/dep_opened.html:21
 msgid "Opened proposals for external teachers"
 msgstr "Propostas em aberto"
 
@@ -99,102 +107,106 @@ msgstr "Propostas em aberto"
 msgid "Submit"
 msgstr "Submeter"
 
-#: templates/app/external_teachers_list.html:21
-#: templates/app/external_teachers_list.html:185
+#: templates/app/external_teachers_list.html:75
+#: templates/app/external_teachers_list.html:249
 msgid "Close"
 msgstr "Fechar"
 
-#: templates/app/external_teachers_list.html:24
+#: templates/app/external_teachers_list.html:78
 msgid "Export to CSV file"
 msgstr "Exportar para ficheiro CSV"
 
-#: templates/app/external_teachers_list.html:27
+#: templates/app/external_teachers_list.html:81
 msgid "Delete"
 msgstr "Apagar"
 
-#: templates/app/external_teachers_list.html:34
+#: templates/app/external_teachers_list.html:88
 msgid "Do"
 msgstr "Aplicar aos elementos selecionados"
 
-#: templates/app/external_teachers_list.html:43
+#: templates/app/external_teachers_list.html:97
 msgid "Toggle All"
 msgstr "Selecionar todos"
 
-#: templates/app/external_teachers_list.html:44
-#: templates/app/external_teachers_list.html:122
+#: templates/app/external_teachers_list.html:98
+#: templates/app/external_teachers_list.html:186
 msgid "Id"
 msgstr "ID"
 
-#: templates/app/external_teachers_list.html:45
-#: templates/app/external_teachers_list.html:126
+#: templates/app/external_teachers_list.html:99
+#: templates/app/external_teachers_list.html:190
 msgid "Name"
 msgstr "Nome"
 
-#: templates/app/external_teachers_list.html:46
-#: templates/app/external_teachers_list.html:141
+#: templates/app/external_teachers_list.html:100
+#: templates/app/external_teachers_list.html:205
 msgid "Professional category"
 msgstr "Categoria profissional"
 
-#: templates/app/external_teachers_list.html:47
+#: templates/app/external_teachers_list.html:101
 msgid "Week hours"
 msgstr "N.º de horas lectivas devidas por semana"
 
-#: templates/app/external_teachers_list.html:48
-#: templates/app/external_teachers_list.html:149
+#: templates/app/external_teachers_list.html:102
+#: templates/app/external_teachers_list.html:213
 msgid "Park"
 msgstr "Parque"
 
-#: templates/app/external_teachers_list.html:49
-#: templates/app/external_teachers_list.html:153
+#: templates/app/external_teachers_list.html:103
+#: templates/app/external_teachers_list.html:217
 msgid "Card"
 msgstr "Cartão"
 
-#: templates/app/external_teachers_list.html:51
-#: templates/app/external_teachers_list.html:161
+#: templates/app/external_teachers_list.html:105
+#: templates/app/external_teachers_list.html:225
 msgid "Degree"
 msgstr "Formação académica"
 
-#: templates/app/external_teachers_list.html:91
-#: templates/app/external_teachers_list.html:92
-#: templates/app/external_teachers_list.html:131
-#: templates/app/external_teachers_list.html:150
-#: templates/app/external_teachers_list.html:154
+#: templates/app/external_teachers_list.html:152
+#: templates/app/external_teachers_list.html:153
+#: templates/app/external_teachers_list.html:195
+#: templates/app/external_teachers_list.html:214
+#: templates/app/external_teachers_list.html:218
 msgid "yes,no"
 msgstr "Sim,Não"
 
-#: templates/app/external_teachers_list.html:105
+#: templates/app/external_teachers_list.html:161
+msgid "+ Info"
+msgstr ""
+
+#: templates/app/external_teachers_list.html:168
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/app/external_teachers_list.html:130
+#: templates/app/external_teachers_list.html:194
 msgid "Is closed"
 msgstr "Fechada?"
 
-#: templates/app/external_teachers_list.html:133
+#: templates/app/external_teachers_list.html:197
 msgid "Close date"
 msgstr "Data de fecho"
 
-#: templates/app/external_teachers_list.html:137
+#: templates/app/external_teachers_list.html:201
 msgid "None"
 msgstr "ND"
 
-#: templates/app/external_teachers_list.html:145
+#: templates/app/external_teachers_list.html:209
 msgid "Hours per week"
 msgstr "Horas por semana"
 
-#: templates/app/external_teachers_list.html:165
+#: templates/app/external_teachers_list.html:229
 msgid "Course"
 msgstr "Unidade curricular"
 
-#: templates/app/external_teachers_list.html:169
+#: templates/app/external_teachers_list.html:233
 msgid "Course manager"
 msgstr "Responsável da unidade curricular"
 
-#: templates/app/external_teachers_list.html:173
+#: templates/app/external_teachers_list.html:237
 msgid "Costs Center"
 msgstr "Centro de Custos que Suporta o Complemento de Bolsa"
 
-#: templates/app/external_teachers_list.html:178
+#: templates/app/external_teachers_list.html:242
 msgid "Notes"
 msgstr "Observações"
 

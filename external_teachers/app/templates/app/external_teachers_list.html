@@ -9,6 +9,60 @@
 		}
 	}
 
+	function parkClick(checkbox, id) {
+		var value = 'false';
+		if(checkbox.checked) {
+			value = 'true';
+		}
+		var requrl = '/app/park/' + id + '/?value=' + value;
+		$.ajax( {
+			url : requrl,
+		    type : 'GET',
+			success : function(data) {
+				var toChange = document.getElementById('park_modal');
+				toChange.innerHTML = data;
+			}
+		})
+	}
+
+	function cardClick(checkbox, id) {
+		var value = 'false';
+		if(checkbox.checked) {
+			value = 'true';
+		}
+		var requrl = '/app/card/' + id + '/?value=' + value;
+
+		$.ajax( {
+			url : requrl,
+			type : 'GET',
+			success : function(data) {
+				var toChange = document.getElementById('card_modal');
+				toChange.innerHTML = data;
+			}
+		})
+	}
+
+	function proCatChange(select, id) {
+		if(select.selectedIndex == -1) {
+			return null;
+		}
+
+		var value = select.options[select.selectedIndex].value
+		
+		var requrl = '/app/pro_cat/' + id + '/?value=' + value;
+
+		$.ajax( {
+			url : requrl,
+			type : 'GET',
+			success : function(data) {
+				var toChange = document.getElementById('pro_cat_modal');
+				toChange.innerHTML = data;
+			}
+		})
+
+		return value;
+	}
+
 </script>
 
 <form role="form" method="post" action=""> 
@@ -66,9 +120,14 @@
 				{% if request.session.is_scientific_council_member and close_action %} 
 				<td>
 					<div class="form-group">
-						<select class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}">
+						<select class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}" onchange="proCatChange(this, {{ external_teacher.id }})">
+							<option value="---"></option>
 							{% for category in pro_categories %}
+							{% if external_teacher.professional_category.0 == category.0  %}
+							<option value="{{ category.0 }}" selected="selected">{{ category.1 }}</option>
+							{% else %}
 							<option value="{{ category.0 }}">{{ category.1 }}</option>
+							{% endif %}
 							{% endfor %}
 					</div>
 				</td>
@@ -79,13 +138,13 @@
 				{% if request.session.is_scientific_council_member and close_action %}
 				<td>
 					<div class="form-group">
-						<input type="checkbox" name="park" value="{{ external_teacher.id }}" {% if external_teacher.park %} checked {% endif %}>
+						<input type="checkbox" name="park" value="{{ external_teacher.id }}" onclick="parkClick(this, {{ external_teacher.id }})" {% if external_teacher.park %} checked {% endif %}>
 						</input>
 					</div>				
 				</td>
 				<td>
 					<div class="form-group">
-						<input type="checkbox" name="card" value="{{ external_teacher.id}}" {% if external_teacher.card %} checked {% endif %}>
+						<input type="checkbox" name="card" value="{{ external_teacher.id}}" onclick='cardClick(this, {{ external_teacher.id }})'{% if external_teacher.card %} checked {% endif %}>
 						</input>
 					</div>				
 				</td>
@@ -144,7 +203,7 @@
 											</tr>
 											<tr>
 												<td>{% trans "Professional category" %}:</td>
-												<td>{{ external_teacher.get_professional_category_display }}</td>
+												<td id="pro_cat_modal">{{ external_teacher.get_professional_category_display }}</td>
 											</tr>
 											<tr>
 												<td>{% trans "Hours per week" %}:</td>
@@ -152,11 +211,11 @@
 											</tr>
 											<tr>
 												<td>{% trans "Park" %}:</td>
-												<td>{{ external_teacher.park|yesno:_("yes,no") }}</td>
+												<td id="park_modal">{{ external_teacher.park|yesno:_("yes,no") }}</td>
 											</tr>
 											<tr>
 												<td>{% trans "Card" %}:</td>
-												<td>{{ external_teacher.card|yesno:_("yes,no") }}</td>
+												<td id="card_modal">{{ external_teacher.card|yesno:_("yes,no") }}</td>
 											</tr>
 											<tr>
 												<td>{% trans "Department" %}:</td>
@@ -200,3 +259,5 @@
 		</table>
 	</div>
 </form>
+
+

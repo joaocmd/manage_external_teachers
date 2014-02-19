@@ -16,4 +16,7 @@ urlpatterns = patterns('',
 		url(r'^dep_prop_new/', views.dep_prop_new, name='dep_prop_new'),
 		url(r'^name/', views.name, name='name'),
 		url(r'^edit/(?P<pk>\d+)/$', views.edit, name='edit'),
+		url(r'^park/(?P<pk>\d+)/$', views.change_park, name='change_park'),
+		url(r'^card/(?P<pk>\d+)/$', views.change_card, name='change_card'),
+		url(r'^pro_cat/(?P<pk>\d+)/$', views.change_professional_category, name='change_pro_cat'),
 )
