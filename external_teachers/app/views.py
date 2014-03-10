@@ -81,6 +81,33 @@ def process_action(request, template, external_teachers, close_action, export_ac
 		
 			return response
 	
+	elif request.POST['action'] == 'export_all_fields':
+			# Create the HttpResponse object with the appropriate CSV header.
+		response = HttpResponse(content_type='text/csv')
+		response['Content-Disposition'] = 'attachment; filename="proposals.csv"'
+		writer = csv.writer(response, delimiter=';')
+		
+		ids = request.POST.getlist('external_teachers')
+
+		if ids:
+			for et_id in ids:
+				e_teacher = ExternalTeacher.objects.get(id = et_id)	
+				if e_teacher.park:
+					park = _('True')
+				else:
+					park = _('False')
+
+				if e_teacher.card:
+					card = _('True')
+				else:
+					card = _('False')
+				writer.writerow([e_teacher.ist_id, e_teacher.get_professional_category_display().encode('utf-8'),
+					e_teacher.hours_per_week, park.encode('utf-8'), card.encode('utf-8'), e_teacher.department,
+					e_teacher.name, e_teacher.degree, e_teacher.course, e_teacher.course_manager,
+					e_teacher.costs_center, e_teacher.notes])
+		
+			return response
+	
 	elif request.POST['action'] == 'delete':
 		ids = request.POST.getlist('external_teachers')
 		if ids:
