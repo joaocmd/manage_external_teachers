@@ -29,6 +29,8 @@ def_password = '0'
 
 JSON_FILE = 'departmentMembers_prod.json'
 
+ENCONDING = 'utf-8'
+
 # Helper functions:
 def process_action(request, template, external_teachers, close_action, export_action, delete_action):
 	saved = False
@@ -76,8 +78,14 @@ def process_action(request, template, external_teachers, close_action, export_ac
 					card = _('True')
 				else:
 					card = _('False')
-				writer.writerow([e_teacher.ist_id, e_teacher.get_professional_category_display().encode('utf-8'),
-					e_teacher.hours_per_week, park.encode('utf-8'), card.encode('utf-8'), e_teacher.department])
+				writer.writerow([
+					e_teacher.ist_id, 
+					e_teacher.get_professional_category_display().encode(ENCONDING),
+					e_teacher.hours_per_week,
+					park.encode(ENCONDING),
+					card.encode(ENCONDING),
+					e_teacher.department
+					])
 		
 			return response
 	
@@ -90,6 +98,19 @@ def process_action(request, template, external_teachers, close_action, export_ac
 		ids = request.POST.getlist('external_teachers')
 
 		if ids:
+			# Write the headers
+			writer.writerow([_('Id').encode(ENCONDING),
+				_('Professional category').encode(ENCONDING),
+				_('Hours per week').encode(ENCONDING),
+				_('Park').encode(ENCONDING),
+				_('Card').encode(ENCONDING),
+				_('Department').encode(ENCONDING),
+				_('Name').encode(ENCONDING),
+				_('Degree').encode(ENCONDING),
+				_('Course').encode(ENCONDING),
+				_('Course manager').encode(ENCONDING),
+				_('Costs Center').encode(ENCONDING),
+				_('Notes').encode(ENCONDING)])
 			for et_id in ids:
 				e_teacher = ExternalTeacher.objects.get(id = et_id)	
 				if e_teacher.park:
@@ -101,10 +122,20 @@ def process_action(request, template, external_teachers, close_action, export_ac
 					card = _('True')
 				else:
 					card = _('False')
-				writer.writerow([e_teacher.ist_id, e_teacher.get_professional_category_display().encode('utf-8'),
-					e_teacher.hours_per_week, park.encode('utf-8'), card.encode('utf-8'), e_teacher.department,
-					e_teacher.name, e_teacher.degree, e_teacher.course, e_teacher.course_manager,
-					e_teacher.costs_center, e_teacher.notes])
+				writer.writerow([
+					e_teacher.ist_id, 
+					e_teacher.get_professional_category_display().encode('utf-8'),
+					e_teacher.hours_per_week, 
+					park.encode(ENCONDING), 
+					card.encode(ENCONDING), 
+					e_teacher.department,
+					e_teacher.name,
+					e_teacher.degree, 
+					e_teacher.course, 
+					e_teacher.course_manager,
+					e_teacher.costs_center, 
+					e_teacher.notes
+					])
 		
 			return response
 	
