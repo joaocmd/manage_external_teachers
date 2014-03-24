@@ -29,7 +29,7 @@ def_password = '0'
 
 JSON_FILE = 'departmentMembers_prod.json'
 
-ENCONDING = 'utf-8'
+ENCODING = 'utf-8'
 
 # Helper functions:
 def process_action(request, template, external_teachers, close_action, export_action, delete_action):
@@ -80,11 +80,11 @@ def process_action(request, template, external_teachers, close_action, export_ac
 					card = _('False')
 				writer.writerow([
 					e_teacher.ist_id, 
-					e_teacher.get_professional_category_display().encode(ENCONDING),
+					e_teacher.get_professional_category_display().encode(ENCODING),
 					e_teacher.hours_per_week,
-					park.encode(ENCONDING),
-					card.encode(ENCONDING),
-					e_teacher.department
+					park.encode(ENCODING),
+					card.encode(ENCODING),
+					e_teacher.department.encode(ENCODING)
 					])
 		
 			return response
@@ -99,18 +99,18 @@ def process_action(request, template, external_teachers, close_action, export_ac
 
 		if ids:
 			# Write the headers
-			writer.writerow([_('Id').encode(ENCONDING),
-				_('Professional category').encode(ENCONDING),
-				_('Hours per week').encode(ENCONDING),
-				_('Park').encode(ENCONDING),
-				_('Card').encode(ENCONDING),
-				_('Department').encode(ENCONDING),
-				_('Name').encode(ENCONDING),
-				_('Degree').encode(ENCONDING),
-				_('Course').encode(ENCONDING),
-				_('Course manager').encode(ENCONDING),
-				_('Costs Center').encode(ENCONDING),
-				_('Notes').encode(ENCONDING)])
+			writer.writerow([_('Id').encode(ENCODING),
+				_('Professional category').encode(ENCODING),
+				_('Hours per week').encode(ENCODING),
+				_('Park').encode(ENCODING),
+				_('Card').encode(ENCODING),
+				_('Department').encode(ENCODING),
+				_('Name').encode(ENCODING),
+				_('Degree').encode(ENCODING),
+				_('Course').encode(ENCODING),
+				_('Course manager').encode(ENCODING),
+				_('Costs Center').encode(ENCODING),
+				_('Notes').encode(ENCODING)])
 			for et_id in ids:
 				e_teacher = ExternalTeacher.objects.get(id = et_id)	
 				if e_teacher.park:
@@ -124,17 +124,17 @@ def process_action(request, template, external_teachers, close_action, export_ac
 					card = _('False')
 				writer.writerow([
 					e_teacher.ist_id, 
-					e_teacher.get_professional_category_display().encode('utf-8'),
+					e_teacher.get_professional_category_display().encode(ENCODING),
 					e_teacher.hours_per_week, 
-					park.encode(ENCONDING), 
-					card.encode(ENCONDING), 
-					e_teacher.department,
-					e_teacher.name,
-					e_teacher.degree, 
-					e_teacher.course, 
-					e_teacher.course_manager,
-					e_teacher.costs_center, 
-					e_teacher.notes
+					park.encode(ENCODING), 
+					card.encode(ENCODING), 
+					e_teacher.department.encode(ENCODING),
+					e_teacher.name.encode(ENCODING),
+					e_teacher.degree.encode(ENCODING), 
+					e_teacher.course.encode(ENCODING), 
+					e_teacher.course_manager.encode(ENCODING),
+					e_teacher.costs_center.encode(ENCODING), 
+					e_teacher.notes.encode(ENCODING)
 					])
 		
 			return response
@@ -293,7 +293,7 @@ def index(request):
 
 # Get the name with a given ist id
 def name(request):
-	name = 'XXXxxxXXX XxXXX xxXXX xXXX'
+	name = 'XxxxxXXX áàÁÀ éÉèÈ íìÍÌ óòÓÒ úùÚÙ ãẽĩõũ âêîôû'
 	return HttpResponse(name)
 
 def about(request):
