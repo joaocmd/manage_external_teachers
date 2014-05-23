@@ -21,10 +21,9 @@ from datetime import datetime
 import csv
 import os
 
-import fenix
+import fenixedu
 
-
-fenixAPI = fenix.FenixAPISingleton()
+fenixAPI = fenixedu.FenixEduAPISingleton()
 def_password = '0'
 
 JSON_FILE = 'departmentMembers_prod.json'
@@ -34,9 +33,9 @@ ENCODING = 'utf-8'
 # Helper functions:
 def process_action(request, template, external_teachers, close_action, export_action, delete_action):
 	saved = False
-	
+
 	if request.POST['action'] == 'close':
-		ids = request.POST.getlist('external_teachers')	
+		ids = request.POST.getlist('external_teachers')
 		ids_park = request.POST.getlist('park')
 		ids_card = request.POST.getlist('card')
 		if ids:
@@ -63,12 +62,12 @@ def process_action(request, template, external_teachers, close_action, export_ac
 		response = HttpResponse(content_type='text/csv')
 		response['Content-Disposition'] = 'attachment; filename="proposals.csv"'
 		writer = csv.writer(response, delimiter=';')
-		
+
 		ids = request.POST.getlist('external_teachers')
 
 		if ids:
 			for et_id in ids:
-				e_teacher = ExternalTeacher.objects.get(id = et_id)	
+				e_teacher = ExternalTeacher.objects.get(id = et_id)
 				if e_teacher.park:
 					park = _('True')
 				else:
@@ -79,22 +78,22 @@ def process_action(request, template, external_teachers, close_action, export_ac
 				else:
 					card = _('False')
 				writer.writerow([
-					e_teacher.ist_id, 
+					e_teacher.ist_id,
 					e_teacher.get_professional_category_display().encode(ENCODING),
 					e_teacher.hours_per_week,
 					park.encode(ENCODING),
 					card.encode(ENCODING),
 					e_teacher.department.encode(ENCODING)
 					])
-		
+
 			return response
-	
+
 	elif request.POST['action'] == 'export_all_fields':
 			# Create the HttpResponse object with the appropriate CSV header.
 		response = HttpResponse(content_type='text/csv')
 		response['Content-Disposition'] = 'attachment; filename="proposals.csv"'
 		writer = csv.writer(response, delimiter=';')
-		
+
 		ids = request.POST.getlist('external_teachers')
 
 		if ids:
@@ -112,7 +111,7 @@ def process_action(request, template, external_teachers, close_action, export_ac
 				_('Costs Center').encode(ENCODING),
 				_('Notes').encode(ENCODING)])
 			for et_id in ids:
-				e_teacher = ExternalTeacher.objects.get(id = et_id)	
+				e_teacher = ExternalTeacher.objects.get(id = et_id)
 				if e_teacher.park:
 					park = _('True')
 				else:
@@ -123,22 +122,22 @@ def process_action(request, template, external_teachers, close_action, export_ac
 				else:
 					card = _('False')
 				writer.writerow([
-					e_teacher.ist_id, 
+					e_teacher.ist_id,
 					e_teacher.get_professional_category_display().encode(ENCODING),
-					e_teacher.hours_per_week, 
-					park.encode(ENCODING), 
-					card.encode(ENCODING), 
+					e_teacher.hours_per_week,
+					park.encode(ENCODING),
+					card.encode(ENCODING),
 					e_teacher.department.encode(ENCODING),
 					e_teacher.name.encode(ENCODING),
-					e_teacher.degree.encode(ENCODING), 
-					e_teacher.course.encode(ENCODING), 
+					e_teacher.degree.encode(ENCODING),
+					e_teacher.course.encode(ENCODING),
 					e_teacher.course_manager.encode(ENCODING),
-					e_teacher.costs_center.encode(ENCODING), 
+					e_teacher.costs_center.encode(ENCODING),
 					e_teacher.notes.encode(ENCODING)
 					])
-		
+
 			return response
-	
+
 	elif request.POST['action'] == 'delete':
 		ids = request.POST.getlist('external_teachers')
 		if ids:
@@ -147,8 +146,8 @@ def process_action(request, template, external_teachers, close_action, export_ac
 				e_teacher = ExternalTeacher.objects.get(id = et_id)
 				e_teacher.delete()
 				context = {'external_teachers' : external_teachers, 'deleted' : True, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
-				
-	
+
+
 	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
 	return render(request, template, context)
 
@@ -175,7 +174,7 @@ def is_scientific_council_member(username, data):
 	for member in scientific_council_members:
 		if username == member["username"]:
 			return True
-	
+
 	return False
 
 def is_admin(username, data):
@@ -184,13 +183,13 @@ def is_admin(username, data):
 	for member in admins:
 		if username == member['username']:
 			return True
-	
+
 	return False
 
 def get_all_departments(data):
 	department_members = data['departmentMembers']
 	departments = []
-	
+
 	for member in department_members:
 		for dep in member['departments']:
 			if dep not in departments:
@@ -209,7 +208,7 @@ class ExternalTeacherForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		arg = kwargs.pop('request', None)
 		super(ExternalTeacherForm, self).__init__(*args, **kwargs)
-		
+
 		session = arg.session
 		deps = session['departments']
 		choices = [(d['acronym'], d['acronym']) for d in deps]
@@ -228,11 +227,11 @@ class ExternalTeacherForm(ModelForm):
 
 	class Meta:
 		model = ExternalTeacher
-		fields = ['ist_id', 'name', 'hours_per_week', 'department', 
+		fields = ['ist_id', 'name', 'hours_per_week', 'department',
 				'degree', 'course', 'course_manager', 'costs_center', 'notes']
 
 		widgets = {'notes' : Textarea(), 'name' : TextInput(attrs={'readonly' : 'true'})}
-			 
+
 # Entry point
 def index(request):
 	url = fenixAPI.get_authentication_url()
@@ -240,7 +239,7 @@ def index(request):
 	json_data = open_json_file(JSON_FILE)
 
 	if code and not request.user.is_authenticated():
-		fenix_user = fenix.User()
+		fenix_user = fenixedu.User()
 		fenixAPI.set_code(code, user=fenix_user)
 		person = fenixAPI.get_person(fenix_user)
 		username = person['username']
@@ -261,7 +260,7 @@ def index(request):
 				departments = get_all_departments(json_data)
 			else:
 				departments = get_departments(user.username, json_data)
-			
+
 			can_login = False
 
 			if is_admin(username, json_data):
@@ -270,14 +269,14 @@ def index(request):
 				request.session['dep_acronyms'] = get_user_dep_acronyms(request)
 				request.session['is_scientific_council_member'] = True
 				can_login = True
-				
+
 			# Check if it's a department member
 			elif departments is not None:
 				request.session['departments'] = departments
 				request.session['is_department_member'] = True
 				request.session['dep_acronyms'] = get_user_dep_acronyms(request)
 				can_login = True
-			
+
 			# Check if it's a scientific council member
 			if is_scientific_council_member(username, json_data):
 				request.session['is_scientific_council_member'] = True
@@ -285,8 +284,8 @@ def index(request):
 
 			if user.is_active and can_login:
 				login(request, user)
-	
-	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session, 
+
+	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session,
 			'is_scientific_council_member' : 'is_scientific_council_member' in request.session}
 
 	return render(request, 'app/index.html', context)
@@ -315,9 +314,9 @@ def sc_opened(request):
 
 	if request.method == 'POST':
 		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
-	
-	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 
-			'export_action' : export_action, 'delete_action' : delete_action, 
+
+	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action,
+			'export_action' : export_action, 'delete_action' : delete_action,
 			'pro_categories' : ExternalTeacher.PROFESSIONAL_CATEGORIES}
 	return render(request, template, context)
 
@@ -331,7 +330,7 @@ def sc_closed(request):
 	if request.method == 'POST':
 		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action, 
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action,
 			'delete_action' : delete_action}
 	return render(request, template, context)
 
@@ -345,7 +344,7 @@ def dep_opened(request):
 	if request.method == 'POST':
 		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action, 
+	context = {'external_teachers' : external_teachers, 'export_action' : export_action,
 			'delete_action' : delete_action, 'can_edit' : True}
 	return render(request, template, context)
 
@@ -355,7 +354,7 @@ def dep_closed(request):
 	delete_action = False
 	template = 'app/dep_closed.html'
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True, department__in = request.session["dep_acronyms"])
-	
+
 	if request.method == 'POST':
 		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
 
@@ -378,7 +377,7 @@ def dep_prop_new(request):
 def edit(request, pk):
 	template = 'app/dep_opened.html'
 	external_teacher = ExternalTeacher.objects.get(id=pk)
-	
+
 	# Its not supposed to try to edit a closed one
 	if external_teacher.is_closed:
 		return render(request, template, {'error' : 'ERROR: This proposal is closed'})
@@ -406,7 +405,7 @@ def change_park(request, pk):
 		response = _('No')
 
 	external_teacher.save()
-	
+
 	return HttpResponse(response)
 
 def change_card(request, pk):
@@ -432,4 +431,3 @@ def change_professional_category(request, pk):
 	external_teacher.save()
 
 	return HttpResponse(external_teacher.get_professional_category_display())
-	
