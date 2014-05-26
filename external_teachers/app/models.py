@@ -12,6 +12,34 @@ class Profile(models.Model):
 	user = models.OneToOneField(User)
 	name = models.CharField(max_length=200)
 
+class Semester(models.Model):
+	number = models.IntegerField()
+	year_initial = models.IntegerField()
+	year_final = models.IntegerField()
+
+	@staticmethod
+	def get_or_create_current():
+		now = datetime.now()
+
+		if now.month < 9:
+			number = 2
+			year_initial = now.year - 1
+			year_final = now.year
+		else:
+			number = 1
+			year_initial = now.year
+			year_final = now.year + 1
+
+		semester, created = Semester.objects.get_or_create(
+			number = number,
+			year_initial = year_initial,
+			year_final = year_final)
+
+		return semester
+
+def get_or_create_current_semester():
+	return Semester.get_or_create_current()
+
 class ExternalTeacher(models.Model):
 	PROFESSIONAL_CATEGORIES = (('a', 'Colaborador Não Remunerado Docente'),
 				   ('b','Equip.Monitor C/Lic'),
@@ -59,6 +87,7 @@ class ExternalTeacher(models.Model):
 	course_manager = models.CharField(max_length=200)
 	costs_center = models.CharField(max_length=200, blank=True)
 	notes = models.CharField(max_length=200, blank=True)
+	semester = models.ForeignKey('Semester', default=get_or_create_current_semester)
 
 	def close(self):
 		self.is_closed = True
@@ -72,6 +101,10 @@ class FenixAPIUserInfo(models.Model):
 	token_expires = models.IntegerField(default=0)
 
 	def get_fenix_api_user(self):
-		user = fenix.User(username=self.user.username, code=self.code, access_token=self.access_token, refresh_token=self.refresh_token, token_expires=self.token_expires)
+		user = fenix.User(
+			username=self.user.username,
+			code=self.code,
+			access_token=self.access_token,
+			refresh_token=self.refresh_token,
+			token_expires=self.token_expires)
 		return user
-

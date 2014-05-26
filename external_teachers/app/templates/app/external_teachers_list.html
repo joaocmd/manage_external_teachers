@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <script language="JavaScript">
-	
+
 	function toggle(source) {
   		checkboxes = document.getElementsByName('external_teachers');
 		for(var i=0, n=checkboxes.length; i<n; i++) {
@@ -48,7 +48,7 @@
 		}
 
 		var value = select.options[select.selectedIndex].value
-		
+
 		var requrl = '/app/pro_cat/' + id + '/?value=' + value;
 
 		$.ajax( {
@@ -65,7 +65,7 @@
 
 </script>
 
-<form role="form" method="post" action=""> 
+<form role="form" method="post" action="">
 	{% csrf_token %}
 	<div class="row">
 		<div class="col-xs-2">
@@ -118,7 +118,7 @@
 					</div>
 				<td>{{ external_teacher.ist_id }}</td>
 				<td>{{ external_teacher.name }}</td>
-				{% if request.session.is_scientific_council_member and close_action %} 
+				{% if request.session.is_scientific_council_member and close_action %}
 				<td>
 					<div class="form-group">
 						<select class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}" onchange="proCatChange(this, {{ external_teacher.id }})">
@@ -141,13 +141,13 @@
 					<div class="form-group">
 						<input type="checkbox" name="park" value="{{ external_teacher.id }}" onclick="parkClick(this, {{ external_teacher.id }})" {% if external_teacher.park %} checked {% endif %}>
 						</input>
-					</div>				
+					</div>
 				</td>
 				<td>
 					<div class="form-group">
 						<input type="checkbox" name="card" value="{{ external_teacher.id}}" onclick='cardClick(this, {{ external_teacher.id }})'{% if external_teacher.card %} checked {% endif %}>
 						</input>
-					</div>				
+					</div>
 				</td>
 				{% else %}
 				<td>{{ external_teacher.park|yesno:_("yes,no") }}</td>
@@ -190,6 +190,16 @@
 											<tr>
 												<td>{% trans "Name" %}:</td>
 												<td>{{ external_teacher.name }}</td>
+											</tr>
+											<tr>
+												<td>{% trans "Semester" %}:</td>
+												<td>
+													{{ external_teacher.semester.number }}
+													{% trans "Semester" %}
+													{{ external_teacher.semester.year_initial }}
+													/
+													{{ external_teacher.semester.year_final }}
+												</td>
 											</tr>
 											<tr>
 												<td>{% trans "Is closed" %}:</td>
@@ -238,7 +248,7 @@
 												<td>{% trans "Costs Center" %}:</td>
 												<td>{{ external_teacher.costs_center }}</td>
 											</tr>
-											
+
 											<tr>
 												<td>{% trans "Notes" %}:</td>
 												<td>{{ external_teacher.notes }}</td>
@@ -253,12 +263,10 @@
 						</div><!-- /.modal-dialog -->
 					</div><!-- /.modal -->
 				</td>
-			
+
 			</tr>
 			{% endfor %}
-	
+
 		</table>
 	</div>
 </form>
-
-
