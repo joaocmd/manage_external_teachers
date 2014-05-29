@@ -4,11 +4,12 @@
 # Http response
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils import simplejson
 
 # Models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from app.models import ExternalTeacher, FenixAPIUserInfo
+from app.models import ExternalTeacher, FenixAPIUserInfo, Semester
 
 # Form widgets
 from django.forms import ModelForm, Textarea, Select, TextInput
@@ -30,8 +31,27 @@ JSON_FILE = 'departmentMembers_prod.json'
 
 ENCODING = 'utf-8'
 
+EXPORT_ACTION = 'export_action'
+CLOSE_ACTION = 'close_action'
+DELETE_ACTION = 'delete_action'
+
+POSSIBLE_ACTIONS = {
+	'dep_opened' : {EXPORT_ACTION : True,
+									CLOSE_ACTION : False,
+									DELETE_ACTION : True},
+	'dep_closed' : {EXPORT_ACTION : True,
+									CLOSE_ACTION : False,
+									DELETE_ACTION : False},
+	'sc_opened' : {EXPORT_ACTION : True,
+									CLOSE_ACTION : True,
+									DELETE_ACTION : True},
+	'sc_closed' : {EXPORT_ACTION : True,
+									CLOSE_ACTION : False,
+									DELETE_ACTION : True},
+}
+
 # Helper functions:
-def process_action(request, template, external_teachers, close_action, export_action, delete_action):
+def process_action(request, template, external_teachers, view):
 	saved = False
 
 	if request.POST['action'] == 'close':
@@ -54,7 +74,8 @@ def process_action(request, template, external_teachers, close_action, export_ac
 				e_teacher.close()
 				e_teacher.save()
 			saved = True
-			context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
+			context = get_context_for_list(external_teachers, view)
+			context['saved'] = saved
 			return render(request, 'app/sc_opened.html', context)
 
 	elif request.POST['action'] == 'export':
@@ -145,10 +166,9 @@ def process_action(request, template, external_teachers, close_action, export_ac
 			for et_id in ids:
 				e_teacher = ExternalTeacher.objects.get(id = et_id)
 				e_teacher.delete()
-				context = {'external_teachers' : external_teachers, 'deleted' : True, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
 
-
-	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action, 'export_action' : export_action, 'delete_action' : delete_action}
+	context = get_context_for_list(external_teachers, view)
+	context['saved'] = saved
 	return render(request, template, context)
 
 import json
@@ -295,6 +315,15 @@ def name(request):
 	name = 'XxxxxXXX áàÁÀ éÉèÈ íìÍÌ óòÓÒ úùÚÙ ãẽĩõũ âêîôû'
 	return HttpResponse(name)
 
+# Get the context to return to the views that show a list of external teachers
+def get_context_for_list(external_teachers, view):
+	context = POSSIBLE_ACTIONS[view]
+	context['external_teachers'] = external_teachers
+	context['semesters'] = Semester.objects.all()
+	return context
+
+
+
 def about(request):
 	about = fenixAPI.get_about()
 	context = {'about' : about['institutionName']}
@@ -307,59 +336,46 @@ def user_logout(request):
 def sc_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
 	saved = False
-	close_action = True
-	export_action = True
-	delete_action = True
 	template = 'app/sc_opened.html'
 
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
+		return process_action(request, template, external_teachers, 'sc_opened')
 
-	context = {'external_teachers' : external_teachers, 'saved' : saved, 'close_action' : close_action,
-			'export_action' : export_action, 'delete_action' : delete_action,
-			'pro_categories' : ExternalTeacher.PROFESSIONAL_CATEGORIES}
+	context = get_context_for_list(external_teachers, 'sc_opened')
+
+	context['saved'] = False
+	context['pro_categories'] = ExternalTeacher.PROFESSIONAL_CATEGORIES
 	return render(request, template, context)
 
 def sc_closed(request):
-	close_action = False
-	export_action = True
-	delete_action = False
 	template = 'app/sc_closed.html'
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
 
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
+		return process_action(request, template, external_teachers, 'sc_closed')
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action,
-			'delete_action' : delete_action}
+	context = get_context_for_list(external_teachers, 'sc_closed')
 	return render(request, template, context)
 
 def dep_opened(request):
 	external_teachers = ExternalTeacher.objects.filter(is_closed = False, department__in = request.session['dep_acronyms'])
-	close_action = False
-	export_action = True
-	delete_action = True
 	template = 'app/dep_opened.html'
 
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
+		return process_action(request, template, external_teachers, 'dep_opened')
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action,
-			'delete_action' : delete_action, 'can_edit' : True}
+	context = get_context_for_list(external_teachers, 'dep_opened')
+	context['can_edit'] = True
 	return render(request, template, context)
 
 def dep_closed(request):
-	close_action = False
-	export_action = True
-	delete_action = False
 	template = 'app/dep_closed.html'
 	external_teachers = ExternalTeacher.objects.filter(is_closed = True, department__in = request.session["dep_acronyms"])
 
 	if request.method == 'POST':
-		return process_action(request, template, external_teachers, close_action, export_action, delete_action)
+		return process_action(request, template, external_teachers, 'dep_closed')
 
-	context = {'external_teachers' : external_teachers, 'export_action' : export_action,
-			'delete_action' : delete_action}
+	context = get_context_for_list(external_teachers, 'dep_closed')
 	return render(request, template, context)
 
 def dep_prop_new(request):
