@@ -13,5 +13,4 @@ def addcss(field, css):
 
 @register.filter(name='semester_tag')
 def semester_tag(semester):
-	result = str(semester.number) + " " + _('Semester').encode(ENCODING) + " " + str(semester.year_initial) + "/" + str(semester.year_final)
-	return result
+	return semester.get_display()

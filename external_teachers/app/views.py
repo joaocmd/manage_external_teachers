@@ -236,6 +236,7 @@ class ExternalTeacherForm(ModelForm):
 		# Labels internationalization
 		self.fields['ist_id'].label = _('IST ID')
 		self.fields['name'].label = _('name')
+		self.fields['semester'].label = _('semester')
 		self.fields['hours_per_week'].label = _('hours_per_week')
 		self.fields['department'].label = _('department')
 		self.fields['degree'].label = _('degree')
@@ -246,8 +247,9 @@ class ExternalTeacherForm(ModelForm):
 
 	class Meta:
 		model = ExternalTeacher
-		fields = ['ist_id', 'name', 'hours_per_week', 'department',
-				'degree', 'course', 'course_manager', 'costs_center', 'notes']
+		fields = ['ist_id', 'name', 'semester', 'hours_per_week',
+							'department', 'degree', 'course', 'course_manager',
+							'costs_center', 'notes']
 
 		widgets = {'notes' : Textarea(), 'name' : TextInput(attrs={'readonly' : 'true'})}
 
@@ -334,7 +336,7 @@ def get_external_teachers_list(request, is_closed, filter_by_dep):
 
 	if semester:
 		external_teachers = external_teachers.filter(semester = semester)
-		
+
 	return external_teachers
 
 def about(request):
@@ -363,7 +365,8 @@ def sc_opened(request):
 
 def sc_closed(request):
 	template = 'app/sc_closed.html'
-	external_teachers = ExternalTeacher.objects.filter(is_closed = True)
+	external_teachers = get_external_teachers_list(request, is_closed = True,
+																									filter_by_dep = False)
 
 	if request.method == 'POST':
 		return process_action(request, template, external_teachers, 'sc_closed')
@@ -372,7 +375,8 @@ def sc_closed(request):
 	return render(request, template, context)
 
 def dep_opened(request):
-	external_teachers = ExternalTeacher.objects.filter(is_closed = False, department__in = request.session['dep_acronyms'])
+	external_teachers = get_external_teachers_list(request, is_closed = False,
+																									filter_by_dep = True)
 	template = 'app/dep_opened.html'
 
 	if request.method == 'POST':
@@ -384,7 +388,8 @@ def dep_opened(request):
 
 def dep_closed(request):
 	template = 'app/dep_closed.html'
-	external_teachers = ExternalTeacher.objects.filter(is_closed = True, department__in = request.session["dep_acronyms"])
+	external_teachers = get_external_teachers_list(request, is_closed = True,
+																									filter_by_dep = True)
 
 	if request.method == 'POST':
 		return process_action(request, template, external_teachers, 'dep_closed')

@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 
 import fenix
 
+ENCODING = 'utf-8'
+
 class Profile(models.Model):
 	user = models.OneToOneField(User)
 	name = models.CharField(max_length=200)
@@ -36,6 +38,12 @@ class Semester(models.Model):
 			year_final = year_final)
 
 		return semester
+
+	def __unicode__(self):
+		return self.get_display()
+
+	def get_display(self):
+		return str(self.number) + " " + _('Semester').encode(ENCODING) + " " + str(self.year_initial) + "/" + str(self.year_final)
 
 def get_or_create_current_semester():
 	return Semester.get_or_create_current()
