@@ -64,13 +64,43 @@
 		return value;
 	}
 
+	function onSemesterSelect() {
+		selected = $('#selectSemester :selected').val();
+		$('#getBySemesterForm').submit();
+	}
+
 </script>
+
+<div class="row">
+
+	<div class="col-xs-2">
+		<form method="get" action="" id="getBySemesterForm">
+			<select class="form-control" id="selectSemester" name="semester"
+			onchange="onSemesterSelect()">
+				<option value="all">
+					{% trans "all" %}
+				</option>
+				<option value="{{ current_semester.id }}">
+					{{ current_semester|semester_tag }}
+				</option>
+				<option value="none" disabled>
+					------------------
+				</option>
+				{% for semester in semesters %}
+				<option value="{{ semester.id }}">
+					{{ semester|semester_tag }}
+				</option>
+				{% endfor %}
+			</select>
+	</form>
+	</div>
+</div>
 
 <form role="form" method="post" action="">
 	{% csrf_token %}
 	<div class="row">
 		<div class="col-xs-2">
-			<select class="form-control" name="action">
+			<select class="form-control" name="action" >
 				<option>{% trans "choose_action" %}</option>
 				{% if close_action %}
 				<option value="close">{% trans "Close" %}</option>
@@ -89,16 +119,6 @@
 				<input type="submit" class="btn btn-default btn-success" value="{% trans "Do" %}">
 				</input>
 			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-2">
-			<select class="form-control" name="action">
-				<option>{% trans "choose_semester" %}</option>
-				{% for semester in semesters %}
-				<option value="{{ semester.id }}">{{ semester|semester_tag }}</option>
-				{% endfor %}
-			</select>
 		</div>
 	</div>
 

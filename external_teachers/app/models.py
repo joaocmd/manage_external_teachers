@@ -87,7 +87,7 @@ class ExternalTeacher(models.Model):
 	course_manager = models.CharField(max_length=200)
 	costs_center = models.CharField(max_length=200, blank=True)
 	notes = models.CharField(max_length=200, blank=True)
-	semester = models.ForeignKey('Semester', default=get_or_create_current_semester)
+	semester = models.ForeignKey('Semester', default=1)
 
 	def close(self):
 		self.is_closed = True

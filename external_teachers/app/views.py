@@ -4,7 +4,6 @@
 # Http response
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.utils import simplejson
 
 # Models
 from django.contrib.auth.models import User
@@ -320,9 +319,23 @@ def get_context_for_list(external_teachers, view):
 	context = POSSIBLE_ACTIONS[view]
 	context['external_teachers'] = external_teachers
 	context['semesters'] = Semester.objects.all()
+	context['current_semester'] = Semester.get_or_create_current()
 	return context
 
+def get_external_teachers_list(request, is_closed, filter_by_dep):
+	semester = request.GET.get('semester')
+	print(semester)
 
+	if filter_by_dep:
+		external_teachers = ExternalTeacher.objects.filter(is_closed = is_closed,
+												department__in = request.session['dep_acronyms'])
+	else:
+		external_teachers = ExternalTeacher.objects.filter(is_closed = is_closed)
+
+	if semester:
+		external_teachers = external_teachers.filter(semester = semester)
+		
+	return external_teachers
 
 def about(request):
 	about = fenixAPI.get_about()
@@ -334,7 +347,8 @@ def user_logout(request):
 	return index(request)
 
 def sc_opened(request):
-	external_teachers = ExternalTeacher.objects.filter(is_closed = False)
+	external_teachers = get_external_teachers_list(request, is_closed = False,
+																									filter_by_dep = False)
 	saved = False
 	template = 'app/sc_opened.html'
 
