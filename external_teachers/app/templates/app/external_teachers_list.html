@@ -69,6 +69,34 @@
 		$('#getBySemesterForm').submit();
 	}
 
+	function fillModal(id) {
+		$('#ext_teacher_name_title').html('{% trans "loading" %}');
+
+		var requrl = '/app/externalteachers/' + id;
+		$.ajax( {
+			url : requrl,
+			type : 'GET',
+			success : function(data) {
+				$('#external_teacher_name_title').html(data.name);
+				$('#external_teacher_name').html(data.name);
+				$('#external_teacher_id').html(data.ist_id);
+				$('#external_teacher_semester').html(data.semester.display);
+				$('#external_teacher_is_closed').html(data.is_closed.display);
+				$('#external_teacher_close_date').html(data.close_date);
+				$('#external_teacher_professional_category').html(data.professional_category.display);
+				$('#external_teacher_hours_per_week').html(data.hours_per_week);
+				$('#external_teacher_park').html(data.park.display);
+				$('#external_teacher_card').html(data.card.display);
+				$('#external_teacher_department').html(data.department);
+				$('#external_teacher_degree').html(data.degree);
+				$('#external_teacher_course').html(data.course);
+				$('#external_teacher_course_manager').html(data.course_manager);
+				$('#external_teacher_costs_center').html(data.costs_center);
+				$('#external_teacher_notes').html(data.notes);
+			}
+		});
+	}
+
 </script>
 
 <div class="row">
@@ -190,7 +218,8 @@
 				<td>{{ external_teacher.degree }}</td>
 				<td>
 					<!-- Button trigger modal -->
-					<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modal{{ external_teacher.id }}">
+					<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#external_teacher_modal"
+					onclick="fillModal({{ external_teacher.id }})">
 						<span class="glyphicon glyphicon-info-sign"></span>
 						{% trans "+ Info" %}
 					</button>
@@ -204,98 +233,90 @@
 					</a>
 					{% endif %}
 				</td>
-				<td>
-					<!-- Modal -->
-					<div class="modal fade" id="modal{{ external_teacher.id }}" tabindex="-1" role="dialog" aria-labelledby="label{{ external_teacher.id }}" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="label{{ external_teacher.id }}">{{ external_teacher.name }}</h4>
-								</div>
-								<div class="modal-body">
-									<div class="table-responsive">
-										<table class="table table-striped">
-											<tr>
-												<td>{% trans "Id" %}:</td>
-												<td>{{ external_teacher.ist_id }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Name" %}:</td>
-												<td>{{ external_teacher.name }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Semester" %}:</td>
-												<td>
-													{{ external_teacher.semester|semester_tag }}
-												</td>
-											</tr>
-											<tr>
-												<td>{% trans "Is closed" %}:</td>
-												<td>{{ external_teacher.is_closed|yesno:_("yes,no") }}</td>
-											</tr>
-												<td>{% trans "Close date" %}:</td>
-												{% if external_teacher.close_date %}
-												<td>{{ external_teacher.close_date }}</td>
-												{% else %}
-												<td>{% trans "None" %}</td>
-												{% endif %}
-											</tr>
-											<tr>
-												<td>{% trans "Professional category" %}:</td>
-												<td id="pro_cat_modal">{{ external_teacher.get_professional_category_display }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Hours per week" %}:</td>
-												<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Park" %}:</td>
-												<td id="park_modal">{{ external_teacher.park|yesno:_("yes,no") }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Card" %}:</td>
-												<td id="card_modal">{{ external_teacher.card|yesno:_("yes,no") }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Department" %}:</td>
-												<td>{{ external_teacher.department }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Degree" %}:</td>
-												<td>{{ external_teacher.degree }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Course" %}:</td>
-												<td>{{ external_teacher.course }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Course manager" %}:</td>
-												<td>{{ external_teacher.course_manager }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Costs Center" %}:</td>
-												<td>{{ external_teacher.costs_center }}</td>
-											</tr>
-
-											<tr>
-												<td>{% trans "Notes" %}:</td>
-												<td>{{ external_teacher.notes }}</td>
-											</tr>
-										</table>
-									</div> <!-- End of responsive table-->
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-								</div>
-							</div><!-- /.modal-content -->
-						</div><!-- /.modal-dialog -->
-					</div><!-- /.modal -->
-				</td>
-
 			</tr>
 			{% endfor %}
 
 		</table>
 	</div>
 </form>
+
+<!-- Modal -->
+<div class="modal fade" id="external_teacher_modal" tabindex="-1" role="dialog" aria-labelledby="label{{ external_teacher.id }}" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="external_teacher_name_title"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<tr>
+							<td>{% trans "Id" %}:</td>
+							<td id="external_teacher_id"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Name" %}:</td>
+							<td id="external_teacher_name"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Semester" %}:</td>
+							<td id="external_teacher_semester"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Is closed" %}:</td>
+							<td id="external_teacher_is_closed"></td>
+						</tr>
+							<td>{% trans "Close date" %}:</td>
+							<td id="external_teacher_close_date"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Professional category" %}:</td>
+							<td id="external_teacher_professional_category"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Hours per week" %}:</td>
+							<td id="external_teacher_hours_per_week"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Park" %}:</td>
+							<td id="external_teacher_park"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Card" %}:</td>
+							<td id="external_teacher_card"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Department" %}:</td>
+							<td id="external_teacher_department"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Degree" %}:</td>
+							<td id="external_teacher_degree"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Course" %}:</td>
+							<td id="external_teacher_course"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Course manager" %}:</td>
+							<td id="external_teacher_course_manager"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Costs Center" %}:</td>
+							<td id="external_teacher_costs_center"></td>
+						</tr>
+
+						<tr>
+							<td>{% trans "Notes" %}:</td>
+							<td id="external_teacher_notes"></td>
+						</tr>
+					</table>
+				</div> <!-- End of responsive table-->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

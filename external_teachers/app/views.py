@@ -20,6 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 import csv
 import os
+from django.core import serializers
 
 import fenixedu
 
@@ -325,8 +326,7 @@ def get_context_for_list(external_teachers, view):
 	return context
 
 def get_external_teachers_list(request, is_closed, filter_by_dep):
-	semester = int(request.GET.get('semester'))
-	print(semester)
+	semester_param = request.GET.get('semester')
 
 	if filter_by_dep:
 		external_teachers = ExternalTeacher.objects.filter(is_closed = is_closed,
@@ -334,9 +334,10 @@ def get_external_teachers_list(request, is_closed, filter_by_dep):
 	else:
 		external_teachers = ExternalTeacher.objects.filter(is_closed = is_closed)
 
-	# <0 means that we want to see all semesters
-	if semester and semester > 0:
-		external_teachers = external_teachers.filter(semester = semester)
+	if semester_param:
+		semester = int(semester_param)
+		if semester > 0:
+			external_teachers = external_teachers.filter(semester = semester)
 
 	return external_teachers
 
@@ -467,3 +468,48 @@ def change_professional_category(request, pk):
 	external_teacher.save()
 
 	return HttpResponse(external_teacher.get_professional_category_display())
+
+def get_boolean_string(boolean):
+	if boolean:
+		result = _('Yes')
+	else:
+		result =  _('No')
+
+	return result.encode(ENCODING)
+
+def get_external_teacher(request, pk):
+	external_teacher = ExternalTeacher.objects.get(id=pk)
+	response = {'id' : external_teacher.id,
+							'ist_id' : external_teacher.ist_id,
+							'name' : external_teacher.name,
+							'semester' : {
+														'id' : external_teacher.semester.id,
+														'display' : external_teacher.semester.get_display()
+														},
+							'is_closed' : {
+															'value' : external_teacher.is_closed,
+															'display' : get_boolean_string(external_teacher.is_closed),
+														},
+							'close_date' : external_teacher.close_date.strftime("%Y-%m-%d %H:%M:%S"),
+							'professional_category' : {
+																					'key' : external_teacher.professional_category,
+																					'display' : external_teacher.get_professional_category_display(),
+																				},
+							'hours_per_week' : '%.2f' % external_teacher.hours_per_week,
+							'park' : {
+													'value' : external_teacher.park,
+													'display' : get_boolean_string(external_teacher.park)
+												},
+							'card' : {
+													'value' : external_teacher.card,
+													'display' : get_boolean_string(external_teacher.card),
+												},
+							'department' : external_teacher.department,
+							'degree' : external_teacher.degree,
+							'course' : external_teacher.course,
+							'course_manager' : external_teacher.course_manager,
+							'costs_center' : external_teacher.costs_center,
+							'notes' : external_teacher.notes,
+						}
+
+	return HttpResponse(json.dumps(response), content_type="application/json")
