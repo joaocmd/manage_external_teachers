@@ -334,7 +334,8 @@ def get_external_teachers_list(request, is_closed, filter_by_dep):
 	else:
 		external_teachers = ExternalTeacher.objects.filter(is_closed = is_closed)
 
-	if semester and semester != -1:
+	# <0 means that we want to see all semesters
+	if semester and semester > 0:
 		external_teachers = external_teachers.filter(semester = semester)
 
 	return external_teachers

@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 import fenix
 
 ENCODING = 'utf-8'
+MONTH_START_CLASSES = 9
 
 class Profile(models.Model):
 	user = models.OneToOneField(User)
@@ -23,7 +24,7 @@ class Semester(models.Model):
 	def get_or_create_current():
 		now = datetime.now()
 
-		if now.month < 9:
+		if now.month < MONTH_START_CLASSES:
 			number = 2
 			year_initial = now.year - 1
 			year_final = now.year
