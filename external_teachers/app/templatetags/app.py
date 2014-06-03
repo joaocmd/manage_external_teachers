@@ -14,3 +14,7 @@ def addcss(field, css):
 @register.filter(name='semester_tag')
 def semester_tag(semester):
 	return semester.get_display()
+
+@register.filter(name='to_int')
+def to_int(string):
+	return int(string)

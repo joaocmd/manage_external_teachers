@@ -325,7 +325,7 @@ def get_context_for_list(external_teachers, view):
 	return context
 
 def get_external_teachers_list(request, is_closed, filter_by_dep):
-	semester = request.GET.get('semester')
+	semester = int(request.GET.get('semester'))
 	print(semester)
 
 	if filter_by_dep:
@@ -334,7 +334,7 @@ def get_external_teachers_list(request, is_closed, filter_by_dep):
 	else:
 		external_teachers = ExternalTeacher.objects.filter(is_closed = is_closed)
 
-	if semester:
+	if semester and semester != -1:
 		external_teachers = external_teachers.filter(semester = semester)
 
 	return external_teachers

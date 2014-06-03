@@ -72,13 +72,11 @@
 </script>
 
 <div class="row">
-	<span>{{ request.GET.semester }}</span>
-
 	<div class="col-xs-2">
 		<form method="get" action="" id="getBySemesterForm">
 			<select class="form-control" id="selectSemester" name="semester"
 			onchange="onSemesterSelect()">
-				<option value="all">
+				<option value="-1">
 					{% trans "all" %}
 				</option>
 				<option value="{{ current_semester.id }}">
@@ -88,7 +86,11 @@
 					------------------
 				</option>
 				{% for semester in semesters %}
-				<option value="{{ semester.id }}">
+				<option value="{{ semester.id }}"
+				{% if request.GET.semester|to_int == semester.id %}
+				selected
+				{% endif %}
+				>
 					{{ semester|semester_tag }}
 				</option>
 				{% endfor %}
