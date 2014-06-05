@@ -17,11 +17,11 @@
 	</head>
 
 	<body>
-		
+
 		<!-- Static navbar -->
 		<div class="navbar navbar-default navbar-static-top" role="navigation">
 			<div class="container">
-				
+
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 						<span class="sr-only">Toggle navigation</span>
@@ -31,7 +31,7 @@
 					</button>
 					<a class="navbar-brand" href="/app">{% trans "External Teachers" %}</a>
 				</div>
-				
+
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li class="{% block navbar_home_active %} {% endblock %}"><a href="/app">Home</a></li>
@@ -67,15 +67,17 @@
 				</div><!--/.nav-collapse -->
 			</div>
 		</div>
-		
+
 		<div class="container">
 			{% block content %} {% endblock %}
    		</div> <!-- /container -->
-		
+
 		<!-- Bootstrap core JavaScript-->
 		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="{% static 'app/bootstrap/js/bootstrap.js' %}"></script>
 
+		<!-- -->
+		<script src="{% static 'app/js/moment-with-langs.min.js' %}"></script>
+
 	</body>
 </html>
-

@@ -479,6 +479,10 @@ def get_boolean_string(boolean):
 
 def get_external_teacher(request, pk):
 	external_teacher = ExternalTeacher.objects.get(id=pk)
+	if external_teacher.close_date:
+		close_date = external_teacher.close_date.strftime("%Y-%m-%d %H:%M:%S")
+	else:
+		close_date = ''
 	response = {'id' : external_teacher.id,
 							'ist_id' : external_teacher.ist_id,
 							'name' : external_teacher.name,
@@ -490,7 +494,7 @@ def get_external_teacher(request, pk):
 															'value' : external_teacher.is_closed,
 															'display' : get_boolean_string(external_teacher.is_closed),
 														},
-							'close_date' : external_teacher.close_date.strftime("%Y-%m-%d %H:%M:%S"),
+							'close_date' : close_date,
 							'professional_category' : {
 																					'key' : external_teacher.professional_category,
 																					'display' : external_teacher.get_professional_category_display(),
