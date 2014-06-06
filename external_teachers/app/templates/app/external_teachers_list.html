@@ -111,7 +111,7 @@
 			<select class="form-control" id="selectSemester" name="semester"
 			onchange="onSemesterSelect()">
 				<option value="-1">
-					{% trans "all" %}
+					{% trans "all_semesters" %}
 				</option>
 				<option value="{{ current_semester.id }}">
 					{{ current_semester|semester_tag }}
