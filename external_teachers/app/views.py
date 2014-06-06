@@ -469,18 +469,10 @@ def change_professional_category(request, pk):
 
 	return HttpResponse(external_teacher.get_professional_category_display())
 
-def get_boolean_string(boolean):
-	if boolean:
-		result = _('Yes')
-	else:
-		result =  _('No')
-
-	return result.encode(ENCODING)
-
 def get_external_teacher(request, pk):
 	external_teacher = ExternalTeacher.objects.get(id=pk)
 	if external_teacher.close_date:
-		close_date = external_teacher.close_date.strftime("%Y-%m-%d %H:%M:%S")
+		close_date = external_teacher.close_date.strftime("%d/%m/%Y %H:%M")
 	else:
 		close_date = ''
 	response = {'id' : external_teacher.id,
@@ -490,24 +482,15 @@ def get_external_teacher(request, pk):
 														'id' : external_teacher.semester.id,
 														'display' : external_teacher.semester.get_display()
 														},
-							'is_closed' : {
-															'value' : external_teacher.is_closed,
-															'display' : get_boolean_string(external_teacher.is_closed),
-														},
+							'is_closed' : external_teacher.is_closed,
 							'close_date' : close_date,
 							'professional_category' : {
 																					'key' : external_teacher.professional_category,
 																					'display' : external_teacher.get_professional_category_display(),
 																				},
 							'hours_per_week' : '%.2f' % external_teacher.hours_per_week,
-							'park' : {
-													'value' : external_teacher.park,
-													'display' : get_boolean_string(external_teacher.park)
-												},
-							'card' : {
-													'value' : external_teacher.card,
-													'display' : get_boolean_string(external_teacher.card),
-												},
+							'park' : external_teacher.park,
+							'card' : external_teacher.card,
 							'department' : external_teacher.department,
 							'degree' : external_teacher.degree,
 							'course' : external_teacher.course,

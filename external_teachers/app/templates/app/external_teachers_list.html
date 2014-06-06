@@ -2,7 +2,6 @@
 {% load app %}
 
 <script language="JavaScript">
-
 	function toggle(source) {
   		checkboxes = document.getElementsByName('external_teachers');
 		for(var i=0, n=checkboxes.length; i<n; i++) {
@@ -20,8 +19,6 @@
 			url : requrl,
 		    type : 'GET',
 			success : function(data) {
-				var toChange = document.getElementById('park_modal');
-				toChange.innerHTML = data;
 			}
 		})
 	}
@@ -37,8 +34,6 @@
 			url : requrl,
 			type : 'GET',
 			success : function(data) {
-				var toChange = document.getElementById('card_modal');
-				toChange.innerHTML = data;
 			}
 		})
 	}
@@ -56,8 +51,6 @@
 			url : requrl,
 			type : 'GET',
 			success : function(data) {
-				var toChange = document.getElementById('pro_cat_modal');
-				toChange.innerHTML = data;
 			}
 		})
 
@@ -69,6 +62,15 @@
 		$('#getBySemesterForm').submit();
 	}
 
+	function getBooleanString(boolean) {
+		if(boolean) {
+			return '{% trans "Yes" %}';
+		}
+		else {
+			return '{% trans "No" %}';
+		}
+	}
+
 	function fillModal(id) {
 		$('#ext_teacher_name_title').html('{% trans "loading" %}');
 
@@ -77,16 +79,20 @@
 			url : requrl,
 			type : 'GET',
 			success : function(data) {
+				var closeDate = '';
 				$('#external_teacher_name_title').html(data.name);
 				$('#external_teacher_name').html(data.name);
 				$('#external_teacher_id').html(data.ist_id);
 				$('#external_teacher_semester').html(data.semester.display);
-				$('#external_teacher_is_closed').html(data.is_closed.display);
-				$('#external_teacher_close_date').html(data.close_date);
+				if(data.is_closed) {
+					closeDate = getMoment(data.close_date);
+				}
+				$('#external_teacher_is_closed').html(getBooleanString(data.is_closed));
+				$('#external_teacher_close_date').html(closeDate);
 				$('#external_teacher_professional_category').html(data.professional_category.display);
 				$('#external_teacher_hours_per_week').html(data.hours_per_week);
-				$('#external_teacher_park').html(data.park.display);
-				$('#external_teacher_card').html(data.card.display);
+				$('#external_teacher_park').html(getBooleanString(data.park));
+				$('#external_teacher_card').html(getBooleanString(data.card));
 				$('#external_teacher_department').html(data.department);
 				$('#external_teacher_degree').html(data.degree);
 				$('#external_teacher_course').html(data.course);

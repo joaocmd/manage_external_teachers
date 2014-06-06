@@ -3,17 +3,17 @@ function getMoment(dateString) {
 	var date = moment(dateString, 'DD/MM/YYYY HH:mm');
 
 	if(date.isBefore(lastweek)) {
-        return dateString;
+        return date.format('D MMMM YYYY');
     } else {
         return date.fromNow();
     }
 }
 
-$(function() {
+/*$(function() {
 	//Iterate all over the elements with a date and put it right
 	$('[data-date]').each(function() {
 		var date = getMoment($(this).attr('data-date'));
 		$(this).text(date);
 	});
 
-});
+});*/

@@ -14,6 +14,8 @@
 		<!-- Bootstrap core CSS -->
 		<link href="{% static 'app/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
 		<link href="{% static 'app/app.css' %}" rel="stylesheet">
+
+		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 	</head>
 
 	<body>
@@ -68,16 +70,22 @@
 			</div>
 		</div>
 
+		<!-- /container -->
 		<div class="container">
 			{% block content %} {% endblock %}
-   		</div> <!-- /container -->
+		</div>
 
 		<!-- Bootstrap core JavaScript-->
-		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+
 		<script src="{% static 'app/bootstrap/js/bootstrap.js' %}"></script>
 
 		<!-- -->
 		<script src="{% static 'app/js/moment-with-langs.min.js' %}"></script>
+		<script src="{% static 'app/js/time.js' %}"></script>
+
+		<script charset="utf-8">
+			moment.lang('{{ request.LANGUAGE_CODE }}')
+		</script>
 
 	</body>
 </html>
