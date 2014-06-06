@@ -321,8 +321,8 @@ def name(request):
 def get_context_for_list(external_teachers, view):
 	context = POSSIBLE_ACTIONS[view]
 	context['external_teachers'] = external_teachers
-	context['semesters'] = Semester.objects.all()
 	context['current_semester'] = Semester.get_or_create_current()
+	context['semesters'] = Semester.objects.all()
 	return context
 
 def get_external_teachers_list(request, is_closed, filter_by_dep):
