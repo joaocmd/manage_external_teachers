@@ -103,6 +103,12 @@ class ExternalTeacher(models.Model):
 		self.is_closed = True
 		self.close_date = datetime.now()
 
+	def get_display(self):
+		return self.ist_id + ' ' + self.name + ' ' + self.course
+
+	def __unicode__(self):
+		return self.get_display()
+
 class FenixAPIUserInfo(models.Model):
 	user = models.OneToOneField(User)
 	code = models.CharField(max_length=200, null=True)
