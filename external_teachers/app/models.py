@@ -11,6 +11,7 @@ import fenix
 
 ENCODING = 'utf-8'
 MONTH_START_CLASSES = 9
+NUMBER_OF_SEMESTERS = 2
 
 class Profile(models.Model):
 	user = models.OneToOneField(User)
@@ -46,6 +47,23 @@ class Semester(models.Model):
 
 	def get_display(self):
 		return str(self.number) + " " + _('Semester').encode(ENCODING) + " " + str(self.year_initial) + "/" + str(self.year_final)
+
+	def get_or_create_next(self):
+		if self.number == NUMBER_OF_SEMESTERS:
+			number = 1
+			year_initial = self.year_initial + 1
+			year_final = self.year_final + 1
+		else:
+			number = self.number + 1
+			year_initial = self.year_initial
+			year_final = self.year_final
+
+		semester, created = Semester.objects.get_or_create(
+			number = number,
+			year_initial = year_initial,
+			year_final = year_final)
+
+		return semester
 
 def get_or_create_current_semester():
 	return Semester.get_or_create_current()

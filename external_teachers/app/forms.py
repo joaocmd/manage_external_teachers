@@ -9,7 +9,7 @@ from django.forms import ModelForm, Textarea, Select, TextInput
 from django.utils.translation import ugettext_lazy as _
 
 #Models
-from app.models import ExternalTeacher
+from app.models import ExternalTeacher, Semester
 
 class ExternalTeacherForm(ModelForm):
 
@@ -33,6 +33,14 @@ class ExternalTeacherForm(ModelForm):
     self.fields['course_manager'].label = _('course_manager')
     self.fields['costs_center'].label = _('costs_center')
     self.fields['notes'].label = _('notes')
+
+    instance = kwargs.pop('instance', None)
+    if instance:
+      semester_initial = instance.id
+    else:
+      semester_initial = Semester.get_or_create_current().id
+
+    self.fields['semester'].initial = semester_initial
 
   class Meta:
     model = ExternalTeacher

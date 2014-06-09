@@ -123,7 +123,8 @@ def dep_closed(request):
 @login_required
 def dep_prop_new(request):
 	if request.method == 'POST':
-		form = forms.ExternalTeacherForm(request.POST, request=request)
+		form = forms.ExternalTeacherForm(request.POST, request=request,
+										initial={'semester' : 10})
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect('/app/dep_opened/')
