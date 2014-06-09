@@ -25,6 +25,7 @@ from django.core import serializers
 import constants
 import utils
 import forms
+import name_service
 
 import fenixedu
 
@@ -63,7 +64,7 @@ def user_logout(request):
 # Get the name with a given ist id
 @login_required
 def name(request):
-	name = 'XxxxxXXX áàÁÀ éÉèÈ íìÍÌ óòÓÒ úùÚÙ ãẽĩõũ âêîôû'
+	name = name_service.get_name_by_istid(request)
 	return HttpResponse(name)
 
 @login_required

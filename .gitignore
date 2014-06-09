@@ -5,3 +5,4 @@ local_settings.py
 fenixedu.ini
 *.json
 db.sqlite3
+name_service.py
