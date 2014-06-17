@@ -40,7 +40,10 @@ class ExternalTeacherForm(ModelForm):
     else:
       semester_initial = Semester.get_or_create_current().id
 
+    semester_choices = [(s.id, s.get_display()) for s in Semester.get_current_and_future()]
+
     self.fields['semester'].initial = semester_initial
+    self.fields['semester'].widget = Select(choices=semester_choices)
 
   class Meta:
     model = ExternalTeacher

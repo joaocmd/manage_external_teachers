@@ -42,6 +42,15 @@ class Semester(models.Model):
 
 		return semester
 
+	@staticmethod
+	def get_current_and_future():
+		current = Semester.get_or_create_current()
+		result = Semester.objects.filter(year_initial__gte=current.year_initial).exclude(
+											number__lt=current.number,
+											year_initial=current.year_initial)
+
+		return result
+
 	def __unicode__(self):
 		return self.get_display()
 
