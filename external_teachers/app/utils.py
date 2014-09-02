@@ -4,6 +4,7 @@
 
 from app.models import ExternalTeacher, FenixAPIUserInfo, Semester
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -12,11 +13,12 @@ import csv
 # Internationalization
 from django.utils.translation import ugettext_lazy as _
 
-import constants
+from . import constants
 
 import fenixedu
 
-fenixAPI = fenixedu.FenixEduAPISingleton()
+config = fenixedu.FenixEduConfiguration.fromConfigFile()
+fenixAPI = fenixedu.FenixEduClient(config)
 
 def process_action(request, template, external_teachers, view):
   saved = False
@@ -214,8 +216,7 @@ def get_external_teachers_list(request, is_closed, filter_by_dep):
 
 def authenticate_by_fenixedu_code(code, request):
   json_data = open_json_file(constants.JSON_FILE)
-  fenix_user = fenixedu.User()
-  fenixAPI.set_code(code, user=fenix_user)
+  fenix_user = fenixAPI.get_user_by_code(code)
   person = fenixAPI.get_person(fenix_user)
   username = person['username']
   email = person['email']
@@ -224,7 +225,7 @@ def authenticate_by_fenixedu_code(code, request):
   if user is None:
     #Create the user
     user = User.objects.create_user(username, email, constants.def_password)
-    info = FenixAPIUserInfo(code=fenix_user.code,
+    info = FenixAPIUserInfo(code=code,
                             access_token=fenix_user.access_token,
                             refresh_token=fenix_user.refresh_token,
                             token_expires=fenix_user.token_expires,

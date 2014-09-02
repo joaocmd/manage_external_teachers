@@ -7,7 +7,7 @@ from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 import json
 
-import fenix
+import fenixedu
 
 ENCODING = 'utf-8'
 MONTH_START_CLASSES = 9
@@ -55,7 +55,7 @@ class Semester(models.Model):
 		return self.get_display()
 
 	def get_display(self):
-		return str(self.number) + " " + _('Semester').encode(ENCODING) + " " + str(self.year_initial) + "/" + str(self.year_final)
+		return str(self.number) + " " + _("semester").encode().decode() + " " + str(self.year_initial) + "/" + str(self.year_final)
 
 	def get_or_create_next(self):
 		if self.number == NUMBER_OF_SEMESTERS:
@@ -136,6 +136,15 @@ class ExternalTeacher(models.Model):
 	def __unicode__(self):
 		return self.get_display()
 
+	def unique_error_message(self, model_class, unique_check):
+		if model_class == type(self) and unique_check == ('semester', 'ist_id'):
+			return _('error.same.semester')
+		else:
+			return super(ExternalTeacher, self).unique_error_message(model_class, unique_check)
+
+	class Meta:
+		unique_together = ('semester', 'ist_id',)
+
 class FenixAPIUserInfo(models.Model):
 	user = models.OneToOneField(User)
 	code = models.CharField(max_length=200, null=True)
@@ -144,7 +153,7 @@ class FenixAPIUserInfo(models.Model):
 	token_expires = models.IntegerField(default=0)
 
 	def get_fenix_api_user(self):
-		user = fenix.User(
+		user = fenixedu.User(
 			username=self.user.username,
 			code=self.code,
 			access_token=self.access_token,

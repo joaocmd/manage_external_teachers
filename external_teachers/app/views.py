@@ -22,14 +22,15 @@ import os
 from django.core import serializers
 
 # Custom modules
-import constants
-import utils
-import forms
-import name_service
+from . import constants
+from . import utils
+from . import forms
+from . import name_service
 
 import fenixedu
 
-fenixAPI = fenixedu.FenixEduAPISingleton()
+config = fenixedu.FenixEduConfiguration.fromConfigFile()
+fenixAPI = fenixedu.FenixEduClient(config)
 
 ##################
 # Public views
@@ -38,9 +39,9 @@ fenixAPI = fenixedu.FenixEduAPISingleton()
 # Entry point
 def index(request):
 	url = fenixAPI.get_authentication_url()
-	code = request.GET.get('code')
+	code = request.GET.get('code', None)
 
-	if code and not request.user.is_authenticated():
+	if code is not None and not request.user.is_authenticated():
 		utils.authenticate_by_fenixedu_code(code, request)
 
 	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session,
@@ -123,8 +124,7 @@ def dep_closed(request):
 @login_required
 def dep_prop_new(request):
 	if request.method == 'POST':
-		form = forms.ExternalTeacherForm(request.POST, request=request,
-										initial={'semester' : 10})
+		form = forms.ExternalTeacherForm(request.POST, request=request)
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect('/app/dep_opened/')

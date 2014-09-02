@@ -11,6 +11,9 @@ active
 
 <form role="form" method="post" action="">
 	{% csrf_token %}
+	{% for error in form.non_field_errors %}
+	<div class="error">{{ error }}</div>
+	{% endfor %}
 	{% for field in form.visible_fields %}
 	<div class="form-group">
 		<div class="error">{{ field.errors }}</div>

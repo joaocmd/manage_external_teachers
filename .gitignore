@@ -6,3 +6,4 @@ fenixedu.ini
 *.json
 db.sqlite3
 name_service.py
+env/
