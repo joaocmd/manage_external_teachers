@@ -214,28 +214,13 @@ def get_external_teachers_list(request, is_closed, filter_by_dep):
 
   return external_teachers
 
-def authenticate_by_fenixedu_code(code, request):
+def authenticate_by_fenixedu_code(request, client, code):
   json_data = open_json_file(constants.JSON_FILE)
-  fenix_user = fenixAPI.get_user_by_code(code)
-  person = fenixAPI.get_person(fenix_user)
-  username = person['username']
-  email = person['email']
-  user = authenticate(username=username, password=constants.def_password)
-  #User doesn't exist
-  if user is None:
-    #Create the user
-    user = User.objects.create_user(username, email, constants.def_password)
-    info = FenixAPIUserInfo(code=code,
-                            access_token=fenix_user.access_token,
-                            refresh_token=fenix_user.refresh_token,
-                            token_expires=fenix_user.token_expires,
-                            user=user)
-    user = authenticate(username=username, password=constants.def_password)
-    user.first_name = person['name']
-    user.save()
-    info.save()
+
+  user = authenticate(request=request, client=client, code=code)
 
   if user is not None:
+    username = user.username
     if is_admin(username, json_data):
       departments = get_all_departments(json_data)
     else:

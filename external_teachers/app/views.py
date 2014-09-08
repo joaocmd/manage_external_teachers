@@ -42,7 +42,7 @@ def index(request):
 	code = request.GET.get('code', None)
 
 	if code is not None and not request.user.is_authenticated():
-		utils.authenticate_by_fenixedu_code(code, request)
+		utils.authenticate_by_fenixedu_code(request, fenixAPI, code)
 
 	context = {'auth_url' : url, 'is_department_member' : 'is_department_member' in request.session,
 			'is_scientific_council_member' : 'is_scientific_council_member' in request.session}
@@ -204,27 +204,27 @@ def get_external_teacher(request, pk):
 	else:
 		close_date = ''
 	response = {'id' : external_teacher.id,
-							'ist_id' : external_teacher.ist_id,
-							'name' : external_teacher.name,
-							'semester' : {
-														'id' : external_teacher.semester.id,
-														'display' : external_teacher.semester.get_display()
-														},
-							'is_closed' : external_teacher.is_closed,
-							'close_date' : close_date,
-							'professional_category' : {
-																					'key' : external_teacher.professional_category,
-																					'display' : external_teacher.get_professional_category_display(),
-																				},
-							'hours_per_week' : '%.2f' % external_teacher.hours_per_week,
-							'park' : external_teacher.park,
-							'card' : external_teacher.card,
-							'department' : external_teacher.department,
-							'degree' : external_teacher.degree,
-							'course' : external_teacher.course,
-							'course_manager' : external_teacher.course_manager,
-							'costs_center' : external_teacher.costs_center,
-							'notes' : external_teacher.notes,
-						}
+				'ist_id' : external_teacher.ist_id,
+				'name' : external_teacher.name,
+				'semester' : {
+					'id' : external_teacher.semester.id,
+					'display' : external_teacher.semester.get_display()
+				},
+				'is_closed' : external_teacher.is_closed,
+				'close_date' : close_date,
+				'professional_category' : {
+					'key' : external_teacher.professional_category,
+					'display' : external_teacher.get_professional_category_display(),
+				},
+				'hours_per_week' : '%.2f' % external_teacher.hours_per_week,
+				'park' : external_teacher.park,
+				'card' : external_teacher.card,
+				'department' : external_teacher.department,
+				'degree' : external_teacher.degree,
+				'course' : external_teacher.course,
+				'course_manager' : external_teacher.course_manager,
+				'costs_center' : external_teacher.costs_center,
+				'notes' : external_teacher.notes,
+			}
 
 	return HttpResponse(json.dumps(response), content_type="application/json")

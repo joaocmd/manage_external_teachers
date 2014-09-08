@@ -106,6 +106,10 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.locale.LocaleMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'fenixedu.authentication.backend.FenixEduAuthenticationBackend',
+    )
+
 ROOT_URLCONF = 'external_teachers.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
