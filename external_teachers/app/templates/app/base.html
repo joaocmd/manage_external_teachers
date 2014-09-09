@@ -62,9 +62,7 @@
 						{% if user.is_authenticated %}
 						<li>
 							<a href="/app">
-								{{ user.first_name }}
-								 
-								{{ user.last_name }}
+								{{ user.first_name }} {{ user.last_name }}
 							</a>
 						</li>
 						<li><a href="/app/logout">Logout</a></li>
