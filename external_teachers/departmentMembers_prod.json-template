@@ -1,0 +1,16 @@
+{
+	"admins": [
+		{"username": "admin"}
+	],
+	"departmentMembers": [
+		{"username": "user",
+		"departments": [
+			{"acronym": "DT", "name": "Department Test"},
+			{"acronym": "DT1", "name": "Department Test 1"},
+			{"acronym": "DT2", "name": "Department Test 2"}
+		]}
+	],
+	"scientificCouncilMembers": [
+		{"username": "user"}
+	]
+}
