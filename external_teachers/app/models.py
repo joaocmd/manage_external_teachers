@@ -77,43 +77,17 @@ class Semester(models.Model):
 def get_or_create_current_semester():
 	return Semester.get_or_create_current()
 
-class ExternalTeacher(models.Model):
-	PROFESSIONAL_CATEGORIES = (('a', 'Colaborador Não Remunerado Docente'),
-				   ('b','Equip.Monitor C/Lic'),
-				   ('c','Equip.Prof.Associado Convidado'),
-				   ('d','Equip. Assistente Convidado'),
-				   ('e','Equiparado Professor Catedrático'),
-				   ('f','Equiparado Professor Extraordinário'),
-				   ('g','Equiparado Assistente Eventual'),
-				   ('h','Segundo Assistente'),
-				   ('i','Equiparado Assistente'),
-				   ('j','Professor Associado Visitante'),
-				   ('k','Professor Catedrático Visitante'),
-				   ('l','Assistente Eventual'),
-				   ('m','Equiparado Professor Auxiliar'),
-				   ('n','Monitor-E.C.D.U. c/Licenciatura'),
-				   ('o','Equip.Monitor S/Lic'),
-				   ('p','Equip.Assistente Estagiario'),
-				   ('q','Equip. Assistente'),
-				   ('r','Equip.Prof.Auxiliar Convidado'),
-				   ('s','Equip. Prof. Auxiliar'),
-				   ('t','Monitor-E.C.D.U.s/Licenciatura'),
-				   ('u','Assistente Estagiario'),
-				   ('v','Assistente Convidado'),
-				   ('w','Assistente'),
-				   ('x','Prof Auxiliar Convidado'),
-				   ('y','Professor Auxiliar'),
-				   ('z','Prof Auxiliar C/Agregação'),
-				   ('A','Professor Associado Convidado'),
-				   ('B','Professor Associado'),
-				   ('C','Professor Associado c/Agregação'),
-				   ('D','Professor Catedrático Convidado'),
-				   ('E','Professor Catedrático'),)
+class ProfessionalCategory(models.Model):
+	slug = models.CharField(max_length=200, unique=True)
+	name = models.CharField(max_length=200)
 
+class ExternalTeacher(models.Model):
 	ist_id = models.CharField(max_length=20)
 	is_closed = models.BooleanField( default=False)
+	closed_by = models.ForeignKey(User, null=True)
 	close_date = models.DateTimeField('close date', null=True)
-	professional_category = models.CharField(max_length=1, blank=False, choices=PROFESSIONAL_CATEGORIES)
+	professional_category_str = models.CharField(max_length=1, blank=True)
+	professional_category = models.ForeignKey(ProfessionalCategory, null=True)
 	hours_per_week = models.DecimalField(decimal_places=2, max_digits=5)
 	park = models.BooleanField(default=False)
 	card = models.BooleanField(default=False)
@@ -126,9 +100,10 @@ class ExternalTeacher(models.Model):
 	notes = models.CharField(max_length=200, blank=True)
 	semester = models.ForeignKey('Semester', default=1)
 
-	def close(self):
+	def close(self, user):
 		self.is_closed = True
 		self.close_date = datetime.now()
+		self.closed_by = user
 
 	def get_display(self):
 		return self.ist_id + ' ' + self.name + ' ' + self.course
@@ -144,19 +119,3 @@ class ExternalTeacher(models.Model):
 
 	class Meta:
 		unique_together = ('semester', 'ist_id',)
-
-class FenixAPIUserInfo(models.Model):
-	user = models.OneToOneField(User)
-	code = models.CharField(max_length=200, null=True)
-	access_token = models.CharField(max_length=200, blank=True)
-	refresh_token = models.CharField(max_length=200, blank=True)
-	token_expires = models.IntegerField(default=0)
-
-	def get_fenix_api_user(self):
-		user = fenixedu.User(
-			username=self.user.username,
-			code=self.code,
-			access_token=self.access_token,
-			refresh_token=self.refresh_token,
-			token_expires=self.token_expires)
-		return user

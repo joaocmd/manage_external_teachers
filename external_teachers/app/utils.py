@@ -2,7 +2,7 @@
 # Utils
 ##################
 
-from app.models import ExternalTeacher, FenixAPIUserInfo, Semester
+from app.models import ExternalTeacher, Semester
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
@@ -19,6 +19,15 @@ import fenixedu
 
 config = fenixedu.FenixEduConfiguration.fromConfigFile()
 fenixAPI = fenixedu.FenixEduClient(config)
+
+def get_department(request, acronym):
+  departments = request.session['departments']
+
+  for dep in departments:
+    if dep['acronym'] == acronym:
+      return dep
+
+  return None
 
 def process_action(request, template, external_teachers, view):
   saved = False
@@ -40,7 +49,7 @@ def process_action(request, template, external_teachers, view):
         # Change professional category
         pro_category = request.POST.getlist('professional_category' + et_id)
         e_teacher.professional_category = pro_category[0]
-        e_teacher.close()
+        e_teacher.close(request.user)
         e_teacher.save()
       saved = True
       context = get_context_for_list(external_teachers, view)
@@ -88,13 +97,18 @@ def process_action(request, template, external_teachers, view):
 
     if ids:
       # Write the headers
-      writer.writerow([_('Id').encode(constants.ENCODING),
-        _('Professional category').encode(constants.ENCODING),
-        _('Hours per week').encode(constants.ENCODING),
+      writer.writerow([_('TheUser').encode(constants.ENCODING),
+        _('Category code').encode(constants.ENCODING),
+        _('Department acronym').encode(constants.ENCODING),
+        _('Hours').encode(constants.ENCODING),
+        _('Engaged').encode(constants.ENCODING),
+        _('Name').encode(constants.ENCODING),
+        _('Category').encode(constants.ENCODING),
+        _('Department').encode(constants.ENCODING),
+        _('Period').encode(constants.ENCODING),
+        _('Authorized by').encode(constants.ENCODING),
         _('Park').encode(constants.ENCODING),
         _('Card').encode(constants.ENCODING),
-        _('Department').encode(constants.ENCODING),
-        _('Name').encode(constants.ENCODING),
         _('Degree').encode(constants.ENCODING),
         _('Course').encode(constants.ENCODING),
         _('Course manager').encode(constants.ENCODING),
@@ -111,14 +125,31 @@ def process_action(request, template, external_teachers, view):
           card = _('True')
         else:
           card = _('False')
+
+        if e_teacher.is_closed:
+          engaged = _('True')
+        else:
+          engaged = _('False')
+
+        if e_teacher.closed_by:
+          closed_by = get_user_display(e_teacher.closed_by)
+        else:
+          closed_by = ''
+
+        department = get_department(request, e_teacher.department)
         writer.writerow([
           e_teacher.ist_id,
-          e_teacher.get_professional_category_display().encode(constants.ENCODING),
+          e_teacher.professional_category.slug.encode(constants.ENCODING),
+          department['acronym'].encode(constants.ENCODING),
           e_teacher.hours_per_week,
+          engaged.encode(constants.ENCODING),
+          e_teacher.name.encode(constants.ENCODING),
+          e_teacher.professional_category.name.encode(constants.ENCODING),
+          department['name'].encode(constants.ENCODING),
+          e_teacher.semester.get_display().encode(constants.ENCODING),
+          closed_by.encode(constants.ENCODING),
           park.encode(constants.ENCODING),
           card.encode(constants.ENCODING),
-          e_teacher.department.encode(constants.ENCODING),
-          e_teacher.name.encode(constants.ENCODING),
           e_teacher.degree.encode(constants.ENCODING),
           e_teacher.course.encode(constants.ENCODING),
           e_teacher.course_manager.encode(constants.ENCODING),
@@ -249,3 +280,14 @@ def authenticate_by_fenixedu_code(request, client, code):
 
     if user.is_active and can_login:
       login(request, user)
+
+def get_user_display(user):
+  return user.get_full_name() + ' (' + user.username + ')'
+
+def get_pro_category_dict(teacher):
+  if teacher.professional_category:
+    category = teacher.professional_category
+    return {'id': category.id, 'slug': category.slug, 'name': category.name}
+  else:
+    return {}
+

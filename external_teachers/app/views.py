@@ -10,7 +10,7 @@ import json
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from app.models import ExternalTeacher, FenixAPIUserInfo, Semester
+from app.models import ExternalTeacher, Semester, ProfessionalCategory
 
 # Internationalization
 from django.utils.translation import ugettext_lazy as _
@@ -70,6 +70,7 @@ def name(request):
 
 @login_required
 def sc_opened(request):
+	print(request.session['departments'])
 	external_teachers = utils.get_external_teachers_list(request, is_closed = False,
 																									filter_by_dep = False)
 	saved = False
@@ -81,7 +82,7 @@ def sc_opened(request):
 	context = utils.get_context_for_list(external_teachers, 'sc_opened')
 
 	context['saved'] = False
-	context['pro_categories'] = ExternalTeacher.PROFESSIONAL_CATEGORIES
+	context['pro_categories'] = ProfessionalCategory.objects.all()
 	return render(request, template, context)
 
 @login_required
@@ -190,11 +191,11 @@ def change_card(request, pk):
 def change_professional_category(request, pk):
 	value = request.GET.get("value")
 	external_teacher = ExternalTeacher.objects.get(id=pk)
-	external_teacher.professional_category = value
+	external_teacher.professional_category = ProfessionalCategory.objects.get(id=value)
 
 	external_teacher.save()
 
-	return HttpResponse(external_teacher.get_professional_category_display())
+	return HttpResponse(utils.get_pro_category_dict(external_teacher))
 
 @login_required
 def get_external_teacher(request, pk):
@@ -203,6 +204,10 @@ def get_external_teacher(request, pk):
 		close_date = external_teacher.close_date.strftime("%d/%m/%Y %H:%M")
 	else:
 		close_date = ''
+	if external_teacher.closed_by:
+		closed_by = utils.get_user_display(external_teacher.closed_by)
+	else:
+		closed_by = ''
 	response = {'id' : external_teacher.id,
 				'ist_id' : external_teacher.ist_id,
 				'name' : external_teacher.name,
@@ -212,10 +217,8 @@ def get_external_teacher(request, pk):
 				},
 				'is_closed' : external_teacher.is_closed,
 				'close_date' : close_date,
-				'professional_category' : {
-					'key' : external_teacher.professional_category,
-					'display' : external_teacher.get_professional_category_display(),
-				},
+				'closed_by': closed_by,
+				'professional_category' : utils.get_pro_category_dict(external_teacher),
 				'hours_per_week' : '%.2f' % external_teacher.hours_per_week,
 				'park' : external_teacher.park,
 				'card' : external_teacher.card,

@@ -1,11 +1,8 @@
 from django.contrib import admin
-from .models import Profile, FenixAPIUserInfo, ExternalTeacher, Semester
+from .models import Profile, ExternalTeacher, Semester
 
 # Register your models here.
 class ProfileAdmin(admin.ModelAdmin):
-  pass
-
-class FenixAPIUserInfoAdmin(admin.ModelAdmin):
   pass
 
 class ExternalTeacherAdmin(admin.ModelAdmin):
@@ -16,6 +13,5 @@ class SemesterAdmin(admin.ModelAdmin):
 
 #register admin classes
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(FenixAPIUserInfo, FenixAPIUserInfoAdmin)
 admin.site.register(ExternalTeacher, ExternalTeacherAdmin)
 admin.site.register(Semester, SemesterAdmin)

@@ -88,8 +88,10 @@
 					closeDate = getMoment(data.close_date);
 				}
 				$('#external_teacher_is_closed').html(getBooleanString(data.is_closed));
+				$('#external_teacher_closed_by').html(
+					data.closed_by)
 				$('#external_teacher_close_date').html(closeDate);
-				$('#external_teacher_professional_category').html(data.professional_category.display);
+				$('#external_teacher_professional_category').html(data.professional_category.name);
 				$('#external_teacher_hours_per_week').html(data.hours_per_week);
 				$('#external_teacher_park').html(getBooleanString(data.park));
 				$('#external_teacher_card').html(getBooleanString(data.card));
@@ -191,16 +193,16 @@
 						<select class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}" onchange="proCatChange(this, {{ external_teacher.id }})">
 							<option value="---"></option>
 							{% for category in pro_categories %}
-							{% if external_teacher.professional_category.0 == category.0  %}
-							<option value="{{ category.0 }}" selected="selected">{{ category.1 }}</option>
+							{% if external_teacher.professional_category.id == category.id  %}
+							<option value="{{ category.id }}" selected="selected">{{ category.name }}</option>
 							{% else %}
-							<option value="{{ category.0 }}">{{ category.1 }}</option>
+							<option value="{{ category.id }}">{{ category.name }}</option>
 							{% endif %}
 							{% endfor %}
 					</div>
 				</td>
 				{% else %}
-				<td>{{ external_teacher.get_professional_category_display }}</td>
+				<td>{{ external_teacher.professional_category.name }}</td>
 				{% endif %}
 				<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
 				{% if request.session.is_scientific_council_member and close_action %}
@@ -272,6 +274,10 @@
 						<tr>
 							<td>{% trans "Is closed" %}:</td>
 							<td id="external_teacher_is_closed"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Authorized by" %}:</td>
+							<td id="external_teacher_closed_by"></td>
 						</tr>
 							<td>{% trans "Close date" %}:</td>
 							<td id="external_teacher_close_date"></td>
