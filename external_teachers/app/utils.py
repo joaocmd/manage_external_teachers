@@ -240,6 +240,7 @@ def get_external_teachers_list(request, is_closed, filter_by_dep):
 
   if semester_param:
     semester = int(semester_param)
+
     if semester > 0:
       external_teachers = external_teachers.filter(semester = semester)
 

@@ -70,7 +70,6 @@ def name(request):
 
 @login_required
 def sc_opened(request):
-	print(request.session['departments'])
 	external_teachers = utils.get_external_teachers_list(request, is_closed = False,
 																									filter_by_dep = False)
 	saved = False
@@ -189,9 +188,15 @@ def change_card(request, pk):
 
 @login_required
 def change_professional_category(request, pk):
-	value = request.GET.get("value")
+	value = int(request.GET.get("value"))
 	external_teacher = ExternalTeacher.objects.get(id=pk)
-	external_teacher.professional_category = ProfessionalCategory.objects.get(id=value)
+
+	if value < 0:
+		category = None
+	else:
+		category = ProfessionalCategory.objects.get(id=value)
+	
+	external_teacher.professional_category = category
 
 	external_teacher.save()
 
