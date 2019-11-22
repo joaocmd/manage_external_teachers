@@ -19,5 +19,5 @@ Simple web application to manage external teachers in fenix system
 - Now you just need to make it run
 - <code>cd external_teachers</code>
 - <code>python manage.py runserver</code>
-- Go to localhost:8000/app
+- Go to localhost:8000/professoresexternos
 - Enjoy it ;)

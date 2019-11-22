@@ -117,5 +117,5 @@ class ExternalTeacher(models.Model):
 		else:
 			return super(ExternalTeacher, self).unique_error_message(model_class, unique_check)
 
-	class Meta:
-		unique_together = ('semester', 'ist_id',)
+#	class Meta:
+#		unique_together = ('semester', 'ist_id',)

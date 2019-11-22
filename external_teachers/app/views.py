@@ -49,6 +49,13 @@ def index(request):
 
 	return render(request, 'app/index.html', context)
 
+# Get the name with a given ist id
+def name(request):
+        import f
+	name = f.from_ist_id(request.GET['username']).partyName.encode("iso-8859-1")
+
+	return HttpResponse(name)
+
 def about(request):
 	about = fenixAPI.get_about()
 	context = {'about' : about['institutionName']}
@@ -127,7 +134,7 @@ def dep_prop_new(request):
 		form = forms.ExternalTeacherForm(request.POST, request=request)
 		if form.is_valid():
 			form.save()
-			return HttpResponseRedirect('/app/dep_opened/')
+			return HttpResponseRedirect('/professoresexternos/dep_opened/')
 	else:
 		form = forms.ExternalTeacherForm(request=request)
 
@@ -147,7 +154,7 @@ def edit(request, pk):
 		form = forms.ExternalTeacherForm(request.POST, request=request, instance=external_teacher)
 		if form.is_valid():
 			form.save()
-			return HttpResponseRedirect('/app/dep_opened/')
+			return HttpResponseRedirect('/professoresexternos/dep_opened/')
 	else:
 		form = forms.ExternalTeacherForm(request=request, instance=external_teacher)
 

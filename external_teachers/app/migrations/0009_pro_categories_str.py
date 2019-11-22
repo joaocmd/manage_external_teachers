@@ -19,7 +19,7 @@ class Migration(DataMigration):
 
     models = {
         u'app.externalteacher': {
-            'Meta': {'unique_together': "(('semester', 'ist_id'),)", 'object_name': 'ExternalTeacher'},
+            'Meta': {'object_name': 'ExternalTeacher'},
             'card': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'close_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'closed_by': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True'}),

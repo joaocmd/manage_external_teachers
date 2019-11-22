@@ -14,7 +14,7 @@
 		if(checkbox.checked) {
 			value = 'true';
 		}
-		var requrl = '/app/park/' + id + '/?value=' + value;
+		var requrl = '/professoresexternos/park/' + id + '/?value=' + value;
 		$.ajax( {
 			url : requrl,
 		    type : 'GET',
@@ -28,7 +28,7 @@
 		if(checkbox.checked) {
 			value = 'true';
 		}
-		var requrl = '/app/card/' + id + '/?value=' + value;
+		var requrl = '/professoresexternos/card/' + id + '/?value=' + value;
 
 		$.ajax( {
 			url : requrl,
@@ -43,9 +43,8 @@
 			return null;
 		}
 
-		var value = select.options[select.selectedIndex].value
-
-		var requrl = '/app/pro_cat/' + id + '/?value=' + value;
+		var value = select.options[select.selectedIndex].value		
+		var requrl = '/professoresexternos/pro_cat/' + id + '/?value=' + value;
 
 		$.ajax( {
 			url : requrl,
@@ -74,7 +73,7 @@
 	function fillModal(id) {
 		$('#ext_teacher_name_title').html('{% trans "loading" %}');
 
-		var requrl = '/app/externalteachers/' + id;
+		var requrl = '/professoresexternos/externalteachers/' + id;
 		$.ajax( {
 			url : requrl,
 			type : 'GET',
@@ -244,7 +243,7 @@
 				</td>
 				<td>
 					{% if can_edit %}
-					<a href="/app/edit/{{ external_teacher.id }}">
+					<a href="/professoresexternos/edit/{{ external_teacher.id }}">
 						<button type="button" class="btn btn-primary btn-lg">
 							<span class="glyphicon glyphicon-pencil"></span> {% trans "Edit" %}
 						</button>

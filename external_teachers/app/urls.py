@@ -19,5 +19,5 @@ urlpatterns = patterns('',
 		url(r'^park/(?P<pk>\d+)/$', views.change_park, name='change_park'),
 		url(r'^card/(?P<pk>\d+)/$', views.change_card, name='change_card'),
 		url(r'^pro_cat/(?P<pk>\d+)/$', views.change_professional_category, name='change_pro_cat'),
-		url(r'^externalteachers/(?P<pk>\d+)/$', views.get_external_teacher, name='get_external_teacher'),
+		url(r'^externalteachers/(?P<pk>\d+)/?$', views.get_external_teacher, name='get_external_teacher'),
 )

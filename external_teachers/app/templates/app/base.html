@@ -31,19 +31,19 @@
 						<span class="icon-bar"></span>
 		   				<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="/app">{% trans "External Teachers" %}</a>
+					<a class="navbar-brand" href="/professoresexternos">{% trans "External Teachers" %}</a>
 				</div>
 
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
-						<li class="{% block navbar_home_active %} {% endblock %}"><a href="/app">Home</a></li>
+						<li class="{% block navbar_home_active %} {% endblock %}"><a href="/professoresexternos">Home</a></li>
 						{% if user.is_authenticated %}
 						{% if request.session.is_scientific_council_member %}
 						<li class="dropdown {% block navbar_sc_active %} {% endblock %}">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#">{% trans "Scientific Council" %}<span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/app/sc_opened">{% trans "Opened" %}</a></li>
-								<li><a href="/app/sc_closed">{% trans "Closed" %}</a></li>
+								<li><a href="/professoresexternos/sc_opened">{% trans "Opened" %}</a></li>
+								<li><a href="/professoresexternos/sc_closed">{% trans "Closed" %}</a></li>
 							</ul>
 							</li>
 						{% endif %}
@@ -51,8 +51,8 @@
 						<li class="dropdown {% block navbar_dep_active %} {% endblock %}">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#">{% trans "Department" %}<span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/app/dep_opened">{% trans "Opened" %}</a></li>
-								<li><a href="/app/dep_closed">{% trans "Closed" %}</a></li>
+								<li><a href="/professoresexternos/dep_opened">{% trans "Opened" %}</a></li>
+								<li><a href="/professoresexternos/dep_closed">{% trans "Closed" %}</a></li>
 							</ul>
 						</li>
 						{% endif %}
@@ -60,12 +60,8 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if user.is_authenticated %}
-						<li>
-							<a href="/app">
-								{{ user.first_name }} {{ user.last_name }}
-							</a>
-						</li>
-						<li><a href="/app/logout">Logout</a></li>
+						<li><a href="/professoresexternos">{{ user.first_name }} {{ user.last_name }}</a></li>
+						<li><a href="/professoresexternos/logout">Logout</a></li>
 						{% else %}
 						<li><a href="{{ auth_url }}">Login</a></li>
 						{% endif %}

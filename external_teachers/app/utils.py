@@ -2,7 +2,7 @@
 # Utils
 ##################
 
-from app.models import ExternalTeacher, Semester
+from app.models import ExternalTeacher, Semester, ProfessionalCategory
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
@@ -22,7 +22,6 @@ fenixAPI = fenixedu.FenixEduClient(config)
 
 def get_department(request, acronym):
   departments = request.session['departments']
-
   for dep in departments:
     if dep['acronym'] == acronym:
       return dep
@@ -48,7 +47,7 @@ def process_action(request, template, external_teachers, view):
           e_teacher.card = True
         # Change professional category
         pro_category = request.POST.getlist('professional_category' + et_id)
-        e_teacher.professional_category = pro_category[0]
+        e_teacher.professional_category = ProfessionalCategory.objects.get(id = pro_category[0])
         e_teacher.close(request.user)
         e_teacher.save()
       saved = True
@@ -59,31 +58,30 @@ def process_action(request, template, external_teachers, view):
   elif request.POST['action'] == 'export':
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="proposals.csv"'
-    writer = csv.writer(response, delimiter=';')
+    response['Content-Disposition'] = 'attachment; filename="proposals_for_fenix_import.csv"'
+    writer = csv.writer(response, delimiter=',')
 
     ids = request.POST.getlist('external_teachers')
 
     if ids:
+      # Write the headers
+      writer.writerow([_('TheUser').encode(constants.ENCODING),
+        _('Category code').encode(constants.ENCODING),
+        _('Department acronym').encode(constants.ENCODING),
+        _('Hours').encode(constants.ENCODING),
+        _('Engaged').encode(constants.ENCODING)])
+
+      engaged = _('False')
+
       for et_id in ids:
         e_teacher = ExternalTeacher.objects.get(id = et_id)
-        if e_teacher.park:
-          park = _('True')
-        else:
-          park = _('False')
-
-        if e_teacher.card:
-          card = _('True')
-        else:
-          card = _('False')
+        department = get_department(request, e_teacher.department)
         writer.writerow([
           e_teacher.ist_id,
-          e_teacher.get_professional_category_display().encode(constants.ENCODING),
+          e_teacher.professional_category.slug.encode(constants.ENCODING),
+          department['acronym'].encode(constants.ENCODING),
           e_teacher.hours_per_week,
-          park.encode(constants.ENCODING),
-          card.encode(constants.ENCODING),
-          e_teacher.department.encode(constants.ENCODING)
-          ])
+          engaged.encode(constants.ENCODING)])
 
       return response
 
@@ -97,18 +95,13 @@ def process_action(request, template, external_teachers, view):
 
     if ids:
       # Write the headers
-      writer.writerow([_('TheUser').encode(constants.ENCODING),
-        _('Category code').encode(constants.ENCODING),
-        _('Department acronym').encode(constants.ENCODING),
-        _('Hours').encode(constants.ENCODING),
-        _('Engaged').encode(constants.ENCODING),
-        _('Name').encode(constants.ENCODING),
-        _('Category').encode(constants.ENCODING),
-        _('Department').encode(constants.ENCODING),
-        _('Period').encode(constants.ENCODING),
-        _('Authorized by').encode(constants.ENCODING),
+      writer.writerow([_('Id').encode(constants.ENCODING),
+        _('Professional category').encode(constants.ENCODING),
+        _('Hours per week').encode(constants.ENCODING),
         _('Park').encode(constants.ENCODING),
         _('Card').encode(constants.ENCODING),
+        _('Department').encode(constants.ENCODING),
+        _('Name').encode(constants.ENCODING),
         _('Degree').encode(constants.ENCODING),
         _('Course').encode(constants.ENCODING),
         _('Course manager').encode(constants.ENCODING),
@@ -125,37 +118,21 @@ def process_action(request, template, external_teachers, view):
           card = _('True')
         else:
           card = _('False')
-
-        if e_teacher.is_closed:
-          engaged = _('True')
-        else:
-          engaged = _('False')
-
-        if e_teacher.closed_by:
-          closed_by = get_user_display(e_teacher.closed_by)
-        else:
-          closed_by = ''
-
-        department = get_department(request, e_teacher.department)
         writer.writerow([
           e_teacher.ist_id,
-          e_teacher.professional_category.slug.encode(constants.ENCODING),
-          department['acronym'].encode(constants.ENCODING),
-          e_teacher.hours_per_week,
-          engaged.encode(constants.ENCODING),
-          e_teacher.name.encode(constants.ENCODING),
           e_teacher.professional_category.name.encode(constants.ENCODING),
-          department['name'].encode(constants.ENCODING),
-          e_teacher.semester.get_display().encode(constants.ENCODING),
-          closed_by.encode(constants.ENCODING),
+          e_teacher.hours_per_week,
           park.encode(constants.ENCODING),
           card.encode(constants.ENCODING),
+          e_teacher.department.encode(constants.ENCODING),
+          e_teacher.name.encode(constants.ENCODING),
           e_teacher.degree.encode(constants.ENCODING),
           e_teacher.course.encode(constants.ENCODING),
           e_teacher.course_manager.encode(constants.ENCODING),
           e_teacher.costs_center.encode(constants.ENCODING),
           e_teacher.notes.encode(constants.ENCODING)
           ])
+
 
       return response
 
@@ -253,7 +230,7 @@ def authenticate_by_fenixedu_code(request, client, code):
 
   if user is not None:
     username = user.username
-    if is_admin(username, json_data):
+    if is_admin(username, json_data) or is_scientific_council_member(username, json_data):
       departments = get_all_departments(json_data)
     else:
       departments = get_departments(user.username, json_data)

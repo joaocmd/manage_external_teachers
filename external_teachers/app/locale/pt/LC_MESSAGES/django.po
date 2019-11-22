@@ -306,3 +306,6 @@ msgstr "As propostas seleccionadas foram fechadas com sucesso"
 
 #~ msgid "About"
 #~ msgstr "Sobre"
+
+msgid "no_professional_category"
+msgstr "Sem categoria profissional"
