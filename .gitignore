@@ -1,10 +1,31 @@
-*.log
-*.pot
-*.pyc
-local_settings.py
-fenixedu.ini
-*.json
-db.sqlite3
-db.sqlite3-*
-name_service.py
+# Development Environment #
+#######################
 env/
+.vscode
+
+# Configuration Files #
+#######################
+fenixedu.ini
+local_settings.py
+name_service.py
+f.py
+
+# Compiled source #
+###################
+*.pyc
+
+# Backup Files #
+################
+*~
+\#*\#
+
+# Logs and databases #
+######################
+*.pot
+*.log
+*.json*
+db.sqlite3*
+
+# Templates #
+#############
+!*.json-template
