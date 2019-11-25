@@ -44,7 +44,6 @@ class Migration(DataMigration):
             'professional_category_str': ('django.db.models.fields.CharField', [], {'max_length': '1', 'blank': 'True'}),
             'semester': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': u"orm['app.Semester']"}),
             'typology': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['app.Typology']", 'null': 'True'}),
-            'typology_str': ('django.db.models.fields.CharField', [], {'max_length': '1', 'blank': 'True'})
         },
         u'app.professionalcategory': {
             'Meta': {'object_name': 'ProfessionalCategory'},
