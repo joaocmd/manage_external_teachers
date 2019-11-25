@@ -111,7 +111,7 @@ class ExternalTeacher(models.Model):
 		self.closed_by = user
 
 	def get_display(self):
-		return self.ist_id + ' ' + self.name + ' ' + self.course
+		return self.ist_id + ' ' + self.name + ' ' + self.course + self.professional_category.name
 
 	def __unicode__(self):
 		return self.get_display()
