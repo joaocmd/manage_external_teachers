@@ -81,6 +81,10 @@ class ProfessionalCategory(models.Model):
 	slug = models.CharField(max_length=200, unique=True)
 	name = models.CharField(max_length=200)
 
+class Typology(models.Model):
+	slug = models.CharField(max_length=200, unique=True)
+	name = models.CharField(max_length=200)
+
 class ExternalTeacher(models.Model):
 	ist_id = models.CharField(max_length=20)
 	is_closed = models.BooleanField( default=False)
@@ -88,6 +92,8 @@ class ExternalTeacher(models.Model):
 	close_date = models.DateTimeField('close date', null=True)
 	professional_category_str = models.CharField(max_length=1, blank=True)
 	professional_category = models.ForeignKey(ProfessionalCategory, null=True)
+	typology_str = models.CharField(max_length=1, blank=True)
+	typology = models.ForeignKey(Typology, null=True)
 	hours_per_week = models.DecimalField(decimal_places=2, max_digits=5)
 	park = models.BooleanField(default=False)
 	card = models.BooleanField(default=False)
