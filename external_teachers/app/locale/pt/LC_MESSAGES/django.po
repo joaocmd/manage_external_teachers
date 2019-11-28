@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-28 14:19+0000\n"
+"POT-Creation-Date: 2019-11-28 15:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: forms.py:25
+msgid "select_typology"
+msgstr "---Selecione uma tipologia---"
 
 #: forms.py:30
 msgid "IST ID"
@@ -62,7 +66,7 @@ msgstr "Centro de Custos que Suporta o Complemento de Bolsa (Opcional)"
 msgid "notes"
 msgstr "Observações"
 
-#: models.py:121
+#: models.py:120
 msgid "error.same.semester"
 msgstr "Já existe uma proposta para este aluno no semestre seleccionado"
 

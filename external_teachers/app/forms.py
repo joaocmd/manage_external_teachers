@@ -22,7 +22,7 @@ class ExternalTeacherForm(ModelForm):
         self.fields['department'].widget = Select(choices=dep_choices)
 
         typologies = Typology.objects.all()
-        typology_choices = [(t.id, t.name) for t in typologies]
+        typology_choices = [(0, _('select_typology'))] + [(t.id, t.name) for t in typologies]
         self.fields['typology'].widget = Select(choices=typology_choices)
 
 
