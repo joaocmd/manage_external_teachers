@@ -14,7 +14,6 @@ class Migration(SchemaMigration):
         # Adding model 'Typology'
         db.create_table(u'app_typology', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('slug', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
         ))
         db.send_create_signal(u'app', ['Typology'])
@@ -84,8 +83,7 @@ class Migration(SchemaMigration):
         u'app.typology': {
             'Meta': {'object_name': 'Typology'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'slug': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         u'auth.group': {
             'Meta': {'object_name': 'Group'},

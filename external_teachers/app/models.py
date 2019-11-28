@@ -82,7 +82,6 @@ class ProfessionalCategory(models.Model):
 	name = models.CharField(max_length=200)
 
 class Typology(models.Model):
-	slug = models.CharField(max_length=200, unique=True)
 	name = models.CharField(max_length=200)
 
 class ExternalTeacher(models.Model):
