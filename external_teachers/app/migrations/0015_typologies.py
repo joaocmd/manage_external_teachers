@@ -4,23 +4,22 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-TYPOLOGIES = {'a': ('monitor', 'Monitor'),
-                'b':  ('colab-docente-equipassistente-convidado', 'Colaborador Docente Equip. Assistente Convidado'),
-                'c': ('complemento-bolsa', 'Complemento de Bolsa'),
-                'd': ('colab-docente-equipprofaux-convidado', 'Colaborador Docente Equip. Prof. Auxiliar Convidado'),
-                'e': ('outros', 'Outros (detalhar em observações)')}
+TYPOLOGIES = ['Monitor',
+              'Colaborador Docente Equip. Assistente Convidado',
+              'Complemento de Bolsa',
+              'Colaborador Docente Equip. Prof. Auxiliar Convidado',
+              'Outros (detalhar em observações)']
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         # Create initial professional categories
-        for key, value in TYPOLOGIES.iteritems():
-            slug, name = value
-            typology = orm.Typology.objects.create(slug=slug, name=name)
+        for name in TYPOLOGIES:
+            typology = orm.Typology.objects.create(name=name)
             typology.save()
     
     def backwards(self, orm):
-        "Write your backwards methods here."
+        pass
 
     models = {
         u'app.externalteacher': {
@@ -67,8 +66,7 @@ class Migration(DataMigration):
         u'app.typology': {
             'Meta': {'object_name': 'Typology'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'slug': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         u'auth.group': {
             'Meta': {'object_name': 'Group'},
