@@ -79,6 +79,8 @@
 			type : 'GET',
 			success : function(data) {
 				var closeDate = '';
+				var pro_category = ($.isEmptyObject(data.professional_category)) ? '' : data.professional_category.name;
+				var typology = ($.isEmptyObject(data.typology)) ? '' : data.typology.name;
 				$('#external_teacher_name_title').html(data.name);
 				$('#external_teacher_name').html(data.name);
 				$('#external_teacher_id').html(data.ist_id);
@@ -90,8 +92,8 @@
 				$('#external_teacher_closed_by').html(
 					data.closed_by)
 				$('#external_teacher_close_date').html(closeDate);
-				$('#external_teacher_professional_category').html(data.professional_category.name);
-				$('#external_teacher_typology').html(data.typology.name);
+				$('#external_teacher_professional_category').html(pro_category);
+				$('#external_teacher_typology').html(typology);
 				$('#external_teacher_hours_per_week').html(data.hours_per_week);
 				$('#external_teacher_park').html(getBooleanString(data.park));
 				$('#external_teacher_card').html(getBooleanString(data.card));
