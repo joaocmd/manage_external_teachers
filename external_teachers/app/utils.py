@@ -272,6 +272,6 @@ def get_pro_category_dict(teacher):
 def get_typology_dict(teacher):
   if teacher.typology:
     typology = teacher.typology
-    return {'id': typology.id, 'slug': typology.slug, 'name': typology.name}
+    return {'id': typology.id, 'name': typology.name}
   else:
     return {}
