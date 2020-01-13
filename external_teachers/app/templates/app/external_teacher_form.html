@@ -11,6 +11,9 @@ active
 
 <form role="form" method="post" action="">
 	{% csrf_token %}
+	{% for error in form.non_field_errors %}
+	<div class="error">{{ error }}</div>
+	{% endfor %}
 	{% for field in form.visible_fields %}
 	<div class="form-group">
 		<div class="error">{{ field.errors }}</div>
@@ -22,10 +25,10 @@ active
 </form>
 
 <script language="JavaScript">
-	
+
 	var id_field = document.getElementById("id_ist_id");
 	var name_field = document.getElementById("id_name");
-	
+
 	id_field.onblur = function() {
 		getData()	
 	}
@@ -34,17 +37,17 @@ active
 
 	function getData() {
 		$.ajax({
-			url : '/app/name?username=' + id_field.value,
+			url : '/professoresexternos/name/?username=' + id_field.value,
 			type: 'GET',
 			success : handleData
 		})
 	}
-	
+
 	function handleData(data) {
 		name_field.value = data
 	}
 
-	
+
 
 </script>
 

@@ -1,7 +1,7 @@
 {% load i18n %}
+{% load app %}
 
 <script language="JavaScript">
-	
 	function toggle(source) {
   		checkboxes = document.getElementsByName('external_teachers');
 		for(var i=0, n=checkboxes.length; i<n; i++) {
@@ -9,19 +9,146 @@
 		}
 	}
 
+	function parkClick(checkbox, id) {
+		var value = 'false';
+		if(checkbox.checked) {
+			value = 'true';
+		}
+		var requrl = '/professoresexternos/park/' + id + '/?value=' + value;
+		$.ajax( {
+			url : requrl,
+		    type : 'GET',
+			success : function(data) {
+			}
+		})
+	}
+
+	function cardClick(checkbox, id) {
+		var value = 'false';
+		if(checkbox.checked) {
+			value = 'true';
+		}
+		var requrl = '/professoresexternos/card/' + id + '/?value=' + value;
+
+		$.ajax( {
+			url : requrl,
+			type : 'GET',
+			success : function(data) {
+			}
+		})
+	}
+
+	function proCatChange(select, id) {
+		if(select.selectedIndex == -1) {
+			return null;
+		}
+
+		var value = select.options[select.selectedIndex].value		
+		var requrl = '/professoresexternos/pro_cat/' + id + '/?value=' + value;
+
+		$.ajax( {
+			url : requrl,
+			type : 'GET',
+			success : function(data) {
+			}
+		})
+
+		return value;
+	}
+
+	function onSemesterSelect() {
+		selected = $('#selectSemester :selected').val();
+		$('#getBySemesterForm').submit();
+	}
+
+	function getBooleanString(boolean) {
+		if(boolean) {
+			return '{% trans "Yes" %}';
+		}
+		else {
+			return '{% trans "No" %}';
+		}
+	}
+
+	function fillModal(id) {
+		$('#ext_teacher_name_title').html('{% trans "loading" %}');
+
+		var requrl = '/professoresexternos/externalteachers/' + id;
+		$.ajax( {
+			url : requrl,
+			type : 'GET',
+			success : function(data) {
+				var closeDate = '';
+				$('#external_teacher_name_title').html(data.name);
+				$('#external_teacher_name').html(data.name);
+				$('#external_teacher_id').html(data.ist_id);
+				$('#external_teacher_semester').html(data.semester.display);
+				if(data.is_closed) {
+					closeDate = getMoment(data.close_date);
+				}
+				$('#external_teacher_is_closed').html(getBooleanString(data.is_closed));
+				$('#external_teacher_closed_by').html(
+					data.closed_by)
+				$('#external_teacher_close_date').html(closeDate);
+				$('#external_teacher_professional_category').html(data.professional_category.name);
+				$('#external_teacher_hours_per_week').html(data.hours_per_week);
+				$('#external_teacher_park').html(getBooleanString(data.park));
+				$('#external_teacher_card').html(getBooleanString(data.card));
+				$('#external_teacher_department').html(data.department);
+				$('#external_teacher_degree').html(data.degree);
+				$('#external_teacher_course').html(data.course);
+				$('#external_teacher_course_manager').html(data.course_manager);
+				$('#external_teacher_costs_center').html(data.costs_center);
+				$('#external_teacher_notes').html(data.notes);
+			}
+		});
+	}
+
 </script>
 
-<form role="form" method="post" action=""> 
+<div class="row">
+	<div class="col-xs-2">
+		<form method="get" action="" id="getBySemesterForm">
+			<select class="form-control" id="selectSemester" name="semester"
+			onchange="onSemesterSelect()">
+				<option value="-1">
+					{% trans "all_semesters" %}
+				</option>
+				<option value="{{ current_semester.id }}">
+					{{ current_semester|semester_tag }}
+				</option>
+				<option value="none" disabled>
+					------------------
+				</option>
+				{% for semester in semesters %}
+				<option value="{{ semester.id }}"
+				{% if request.GET.semester|to_int == semester.id %}
+				selected
+				{% endif %}
+				>
+					{{ semester|semester_tag }}
+				</option>
+				{% endfor %}
+			</select>
+	</form>
+	</div>
+</div>
+
+<form role="form" method="post" action="">
 	{% csrf_token %}
 	<div class="row">
 		<div class="col-xs-2">
-			<select class="form-control" name="action">
-				<option>-----</option>
+			<select class="form-control" name="action" >
+				<option>{% trans "choose_action" %}</option>
 				{% if close_action %}
 				<option value="close">{% trans "Close" %}</option>
 				{% endif %}
 				{% if export_action %}
 				<option value="export">{% trans "Export to CSV file" %}</option>
+				<option value="export_all_fields">{% trans "Export with all fields to CSV file" %}
+				{% endif %}
+				{% if delete_action %}
+				<option value="delete">{% trans "Delete" %}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -46,6 +173,8 @@
 				<th>{% trans "Department" %}</th>
 				<th>{% trans "Degree" %}</th>
 				<th></th>
+				<th></th>
+				<th></th>
 
 			</tr>
 			{% for external_teacher in external_teachers %}
@@ -57,31 +186,46 @@
 					</div>
 				<td>{{ external_teacher.ist_id }}</td>
 				<td>{{ external_teacher.name }}</td>
-				{% if request.session.is_scientific_council_member and close_action %} 
+				{% if request.session.is_scientific_council_member and close_action%}
 				<td>
 					<div class="form-group">
-						<select class="form-control" name="professional_category{{ external_teacher.id }}" id="{{ external_teacher.id }}" placeholder="" value="{{ external_teacher.professional_category }}">
+						<select class="form-control" 
+						name="professional_category{{ external_teacher.id }}" 
+						id="{{ external_teacher.id }}" 
+						placeholder="" 
+						onchange="proCatChange(this, {{ external_teacher.id }})">
+							<option value="-1">
+								{% trans "no_professional_category" %}
+							</option>
 							{% for category in pro_categories %}
-							<option value="{{ category.0 }}">{{ category.1 }}</option>
+							{% if external_teacher.professional_category.id == category.id  %}
+							<option value="{{ category.id }}" selected="selected">
+								{{ category.name }}
+							</option>
+							{% else %}
+							<option value="{{ category.id }}">
+								{{ category.name }}
+							</option>
+							{% endif %}
 							{% endfor %}
 					</div>
 				</td>
 				{% else %}
-				<td>{{ external_teacher.get_professional_category_display }}</td>
+				<td>{{ external_teacher.professional_category.name }}</td>
 				{% endif %}
 				<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
 				{% if request.session.is_scientific_council_member and close_action %}
 				<td>
 					<div class="form-group">
-						<input type="checkbox" name="park" value="{{ external_teacher.id }}" {% if external_teacher.park %} checked {% endif %}>
+						<input type="checkbox" name="park" value="{{ external_teacher.id }}" onclick="parkClick(this, {{ external_teacher.id }})" {% if external_teacher.park %} checked {% endif %}>
 						</input>
-					</div>				
+					</div>
 				</td>
 				<td>
 					<div class="form-group">
-						<input type="checkbox" name="card" value="{{ external_teacher.id}}" {% if external_teacher.card %} checked {% endif %}>
+						<input type="checkbox" name="card" value="{{ external_teacher.id}}" onclick='cardClick(this, {{ external_teacher.id }})'{% if external_teacher.card %} checked {% endif %}>
 						</input>
-					</div>				
+					</div>
 				</td>
 				{% else %}
 				<td>{{ external_teacher.park|yesno:_("yes,no") }}</td>
@@ -91,89 +235,109 @@
 				<td>{{ external_teacher.degree }}</td>
 				<td>
 					<!-- Button trigger modal -->
-					<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modal{{ external_teacher.id }}">
-						+ info
+					<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#external_teacher_modal"
+					onclick="fillModal({{ external_teacher.id }})">
+						<span class="glyphicon glyphicon-info-sign"></span>
+						{% trans "+ Info" %}
 					</button>
-					<!-- Modal -->
-					<div class="modal fade" id="modal{{ external_teacher.id }}" tabindex="-1" role="dialog" aria-labelledby="label{{ external_teacher.id }}" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="label{{ external_teacher.id }}">{{ external_teacher.name }}</h4>
-								</div>
-								<div class="modal-body">
-									<div class="table-responsive">
-										<table class="table table-striped">
-											<tr>
-												<td>{% trans "Id" %}:</td>
-												<td>{{ external_teacher.ist_id }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Name" %}:</td>
-												<td>{{ external_teacher.name }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Is closed" %}:</td>
-												<td>{{ external_teacher.is_closed|yesno:_("yes,no") }}</td>
-											</tr>
-												<td>{% trans "Close date" %}:</td>
-												{% if external_teacher.close_date %}
-												<td>{{ external_teacher.close_date }}</td>
-												{% else %}
-												<td>{% trans "None" %}</td>
-												{% endif %}
-											</tr>
-											<tr>
-												<td>{% trans "Professional category" %}:</td>
-												<td>{{ external_teacher.get_professional_category_display }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Hours per week" %}:</td>
-												<td>{{ external_teacher.hours_per_week|floatformat:2 }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Park" %}:</td>
-												<td>{{ external_teacher.park|yesno:_("yes,no") }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Card" %}:</td>
-												<td>{{ external_teacher.card|yesno:_("yes,no") }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Department" %}:</td>
-												<td>{{ external_teacher.department }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Degree" %}:</td>
-												<td>{{ external_teacher.degree }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Course" %}:</td>
-												<td>{{ external_teacher.course }}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Course manager" %}:</td>
-												<td>{{external_teacher.course_manager}}</td>
-											</tr>
-											<tr>
-												<td>{% trans "Notes" %}:</td>
-												<td>{{external_teacher.notes}}</td>
-											</tr>
-										</table>
-									</div> <!-- End of responsive table-->
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-								</div>
-							</div><!-- /.modal-content -->
-						</div><!-- /.modal-dialog -->
-					</div><!-- /.modal -->
 				</td>
-			
+				<td>
+					{% if can_edit %}
+					<a href="/professoresexternos/edit/{{ external_teacher.id }}">
+						<button type="button" class="btn btn-primary btn-lg">
+							<span class="glyphicon glyphicon-pencil"></span> {% trans "Edit" %}
+						</button>
+					</a>
+					{% endif %}
+				</td>
 			</tr>
 			{% endfor %}
-	
+
 		</table>
 	</div>
 </form>
+
+<!-- Modal -->
+<div class="modal fade" id="external_teacher_modal" tabindex="-1" role="dialog" aria-labelledby="label{{ external_teacher.id }}" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="external_teacher_name_title"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<tr>
+							<td>{% trans "Id" %}:</td>
+							<td id="external_teacher_id"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Name" %}:</td>
+							<td id="external_teacher_name"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Semester" %}:</td>
+							<td id="external_teacher_semester"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Is closed" %}:</td>
+							<td id="external_teacher_is_closed"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Authorized by" %}:</td>
+							<td id="external_teacher_closed_by"></td>
+						</tr>
+							<td>{% trans "Close date" %}:</td>
+							<td id="external_teacher_close_date"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Professional category" %}:</td>
+							<td id="external_teacher_professional_category"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Hours per week" %}:</td>
+							<td id="external_teacher_hours_per_week"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Park" %}:</td>
+							<td id="external_teacher_park"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Card" %}:</td>
+							<td id="external_teacher_card"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Department" %}:</td>
+							<td id="external_teacher_department"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Degree" %}:</td>
+							<td id="external_teacher_degree"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Course" %}:</td>
+							<td id="external_teacher_course"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Course manager" %}:</td>
+							<td id="external_teacher_course_manager"></td>
+						</tr>
+						<tr>
+							<td>{% trans "Costs Center" %}:</td>
+							<td id="external_teacher_costs_center"></td>
+						</tr>
+
+						<tr>
+							<td>{% trans "Notes" %}:</td>
+							<td id="external_teacher_notes"></td>
+						</tr>
+					</table>
+				</div> <!-- End of responsive table-->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

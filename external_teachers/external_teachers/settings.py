@@ -7,23 +7,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
-
-MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
-
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -36,7 +19,7 @@ TIME_ZONE = 'Europe/Lisbon'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt'
 
 SITE_ID = 1
 
@@ -68,7 +51,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/professoresexternos/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -85,9 +68,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '2#3)jtugwkz5ea72l*!r!$z#is6=1kquh75e_bx34qj-k@=j4h'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -96,6 +76,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'external_teachers.force_default_middleware.ForceDefaultLanguageMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -105,6 +86,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'django.middleware.locale.LocaleMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = (
+    'fenixedu.authentication.backend.FenixEduAuthenticationBackend',
+    )
 
 ROOT_URLCONF = 'external_teachers.urls'
 
@@ -130,7 +115,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
 	'app',
-	'django_extensions'
+	'django_extensions',
+	'south',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -163,3 +149,5 @@ LOGGING = {
 }
 
 TEMPLATE_CONTEXT_PROCESSORS = ('django.core.context_processors.request', 'django.contrib.auth.context_processors.auth', )
+
+LOGIN_URL = '/professoresexternos'
